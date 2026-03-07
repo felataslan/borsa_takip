@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   description: 'BIST Hisseleri Fiyat Takip Platformu',
 };
 
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import theme from '@/theme/theme';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,10 +33,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased bg-black text-white selection:bg-green-500/30`}
       >
-        <div className="relative flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">{children}</main>
-        </div>
+        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <div className="relative flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+            </div>
+          </ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

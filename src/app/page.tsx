@@ -5,6 +5,8 @@ import { Stock } from '@/types/stock.types';
 import StockCard from '@/components/StockCard';
 import { Activity } from 'lucide-react';
 
+import { Box, Container, Typography, CircularProgress, Alert } from '@mui/material';
+
 export default function Home() {
   const [stocks, setStocks] = useState<Stock[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,48 +46,73 @@ export default function Home() {
     }, {} as Record<string, Stock[]>);
 
     return (
-      <div className="space-y-12 relative z-10">
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative', zIndex: 10 }}>
         {Object.entries(groupedStocks).map(([sector, sectorStocks]) => (
-          <div key={sector} className="space-y-4">
-            <h2 className="text-xl font-semibold text-white border-b border-gray-800 pb-2">{sector}</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <Box key={sector} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 600,
+                color: 'text.primary',
+                borderBottom: '1px solid',
+                borderColor: 'rgba(31, 41, 55, 1)',
+                pb: 1,
+              }}
+            >
+              {sector}
+            </Typography>
+            <Box
+              sx={{
+                display: 'grid',
+                gap: 2,
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)',
+                  lg: 'repeat(4, 1fr)',
+                  xl: 'repeat(5, 1fr)',
+                },
+              }}
+            >
               {sectorStocks.map((stock, idx) => (
                 <StockCard key={stock.symbol} stock={stock} index={idx} />
               ))}
-            </div>
-          </div>
+            </Box>
+          </Box>
         ))}
-      </div>
+      </Box>
     );
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 relative z-10">
-        <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-2">
-          <Activity className="h-8 w-8 text-green-500" />
+    <Container maxWidth="xl" sx={{ py: 4, minHeight: '100vh', position: 'relative', overflowX: 'clip' }}>
+      <Box sx={{ mb: 4, position: 'relative', zIndex: 10 }}>
+        <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1, color: 'text.primary' }}>
+          <Activity color="#22c55e" size={32} />
           Borsa İstanbul Piyasaları
-        </h1>
-        <p className="mt-2 text-gray-400 max-w-2xl">
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ mt: 1, maxWidth: 'md' }}>
           En çok işlem gören BİST hisselerinin güncel fiyatları ve değişim oranları. (Veriler Yahoo Finance üzerinden 15 dk gecikmeli sağlanmaktadır)
-        </p>
-      </div>
+        </Typography>
+      </Box>
 
       {loading ? (
-        <div className="flex h-64 items-center justify-center">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-800 border-t-green-500" />
-        </div>
+        <Box sx={{ display: 'flex', height: 256, alignItems: 'center', justifyContent: 'center' }}>
+          <CircularProgress color="primary" />
+        </Box>
       ) : error ? (
-        <div className="rounded-2xl bg-red-900/20 p-8 border border-red-500/30 text-center max-w-lg mx-auto mt-12 backdrop-blur">
-          <p className="text-red-400 font-medium">{error}</p>
-        </div>
+        <Box sx={{ maxWidth: 'md', mx: 'auto', mt: 6 }}>
+          <Alert severity="error" variant="outlined" sx={{ bgcolor: 'rgba(127, 29, 29, 0.2)', color: '#f87171' }}>
+            {error}
+          </Alert>
+        </Box>
       ) : (
         renderStocks()
       )}
       
       {/* Background decoration elements */}
-      <div className="fixed top-20 right-0 -z-10 h-64 w-64 rounded-full bg-green-500/5 blur-[120px] pointer-events-none" />
-      <div className="fixed bottom-0 left-0 -z-10 h-96 w-96 rounded-full bg-blue-500/5 blur-[150px] pointer-events-none" />
-    </div>
+      <Box sx={{ position: 'fixed', top: 80, right: 0, zIndex: -10, height: 256, width: 256, borderRadius: '50%', bgcolor: 'rgba(34, 197, 94, 0.05)', filter: 'blur(120px)', pointerEvents: 'none' }} />
+      <Box sx={{ position: 'fixed', bottom: 0, left: 0, zIndex: -10, height: 384, width: 384, borderRadius: '50%', bgcolor: 'rgba(59, 130, 246, 0.05)', filter: 'blur(150px)', pointerEvents: 'none' }} />
+    </Container>
   );
 }

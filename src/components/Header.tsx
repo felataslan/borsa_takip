@@ -2,39 +2,60 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Activity, Star } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { AppBar, Toolbar, Typography, Button, Box, Container } from '@mui/material';
+import { Activity, Star } from 'lucide-react';
 
 export default function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-gray-950/80 backdrop-blur supports-[backdrop-filter]:bg-gray-950/60">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2 text-white">
-          <Activity className="h-6 w-6 text-green-500" />
-          <span className="font-bold text-xl tracking-tight">Borsa<span className="text-green-500">Takip</span></span>
-        </Link>
-        <nav className="flex items-center space-x-6">
-          <Link
-            href="/"
-            className={`text-sm font-medium transition-colors hover:text-white ${
-              pathname === '/' ? 'text-white' : 'text-gray-400'
-            }`}
-          >
-            Piyasalar
+    <AppBar position="sticky" elevation={0} sx={{ zIndex: 50 }}>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters sx={{ height: 64, display: 'flex', justifyContent: 'space-between' }}>
+          
+          {/* Logo Section */}
+          <Link href="/" passHref style={{ textDecoration: 'none' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.primary' }}>
+              <Activity color="#22c55e" size={24} />
+              <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', letterSpacing: '-0.025em' }}>
+                Borsa<Box component="span" sx={{ color: 'primary.main' }}>Takip</Box>
+              </Typography>
+            </Box>
           </Link>
-          <Link
-            href="/favorites"
-            className={`flex items-center space-x-1 text-sm font-medium transition-colors hover:text-white ${
-              pathname === '/favorites' ? 'text-white' : 'text-gray-400'
-            }`}
-          >
-            <Star className="h-4 w-4" />
-            <span>Favoriler</span>
-          </Link>
-        </nav>
-      </div>
-    </header>
+
+          {/* Navigation Section */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Button
+              component={Link}
+              href="/"
+              sx={{
+                color: pathname === '/' ? 'text.primary' : 'text.secondary',
+                fontWeight: 500,
+                textTransform: 'none',
+                '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
+              }}
+            >
+              Piyasalar
+            </Button>
+            
+            <Button
+              component={Link}
+              href="/favorites"
+              startIcon={<Star size={16} />}
+              sx={{
+                color: pathname === '/favorites' ? 'text.primary' : 'text.secondary',
+                fontWeight: 500,
+                textTransform: 'none',
+                '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
+              }}
+            >
+              Favoriler
+            </Button>
+          </Box>
+          
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 }

@@ -3,13 +3,7 @@ import { motion } from 'framer-motion';
 import { Star, TrendingDown, TrendingUp } from 'lucide-react';
 import { Stock } from '@/types/stock.types';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-// Helper for tailwind class merging
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+import { Card, CardContent, Typography, IconButton, Box, Chip } from '@mui/material';
 
 interface StockCardProps {
   stock: Stock;
@@ -32,51 +26,102 @@ export default function StockCard({ stock, index = 0 }: StockCardProps) {
   };
 
   return (
-    <motion.div
+    <Card
+      component={motion.div}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
       whileHover={{ scale: 1.02 }}
-      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-gray-800 bg-gray-900/50 p-6 backdrop-blur-md transition-all hover:border-gray-700 hover:shadow-xl hover:shadow-gray-900/50"
+      sx={{
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        overflow: 'hidden',
+        bgcolor: 'rgba(17, 24, 39, 0.5)', // gray-900/50
+        backdropFilter: 'blur(12px)',
+        transition: 'all 0.2s ease-in-out',
+        '&:hover': {
+          borderColor: 'rgba(55, 65, 81, 1)', // gray-700
+          boxShadow: '0 20px 25px -5px rgba(17, 24, 39, 0.5), 0 8px 10px -6px rgba(17, 24, 39, 0.5)',
+        },
+      }}
     >
-      <div className="absolute right-0 top-0 h-32 w-32 -translate-y-8 translate-x-8 rounded-full bg-gradient-to-br from-gray-800/40 to-transparent blur-2xl transition-all group-hover:bg-gradient-to-br group-hover:from-gray-700/40" />
+      <Box
+        sx={{
+          position: 'absolute',
+          right: 0,
+          top: 0,
+          height: 128,
+          width: 128,
+          transform: 'translate(32px, -32px)',
+          borderRadius: '50%',
+          background: 'linear-gradient(to bottom right, rgba(31, 41, 55, 0.4), transparent)',
+          filter: 'blur(24px)',
+          transition: 'all 0.2s',
+          '.MuiCard-root:hover &': {
+            background: 'linear-gradient(to bottom right, rgba(55, 65, 81, 0.4), transparent)',
+          },
+        }}
+      />
 
-      <div className="relative z-10 flex items-start justify-between">
-        <div>
-          <h3 className="font-bold text-xl text-white tracking-tight">{stock.symbol.replace('.IS', '')}</h3>
-          <p className="text-sm text-gray-400 mt-1 max-w-[200px] truncate" title={stock.shortName}>{stock.shortName}</p>
-        </div>
-        <button
-          onClick={toggleFavorite}
-          className="rounded-full p-2 transition-colors hover:bg-gray-800 focus:outline-none"
-          aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
-        >
-          <Star
-            className={cn(
-              'h-5 w-5 transition-all',
-              favorite ? 'fill-yellow-500 text-yellow-500' : 'text-gray-500 hover:text-gray-300'
-            )}
+      <CardContent sx={{ position: 'relative', zIndex: 1, p: 3, '&:last-child': { pb: 3 } }}>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', letterSpacing: '-0.025em' }}>
+              {stock.symbol.replace('.IS', '')}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ mt: 0.5, maxWidth: 200, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+              title={stock.shortName}
+            >
+              {stock.shortName}
+            </Typography>
+          </Box>
+          <IconButton
+            onClick={toggleFavorite}
+            aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
+            sx={{
+              color: favorite ? '#eab308' : 'text.secondary', // yellow-500
+              '&:hover': { color: favorite ? '#facc15' : 'text.primary', bgcolor: 'rgba(31, 41, 55, 1)' },
+            }}
+          >
+            <Star
+              size={20}
+              fill={favorite ? '#eab308' : 'none'}
+              style={{ transition: 'all 0.2s' }}
+            />
+          </IconButton>
+        </Box>
+
+        <Box sx={{ mt: 3, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography variant="h4" component="span" sx={{ fontWeight: 'bold', letterSpacing: '-0.05em' }}>
+              {stock.regularMarketPrice.toFixed(2)}{' '}
+              <Typography component="span" variant="h6" color="text.secondary" sx={{ fontWeight: 500 }}>
+                ₺
+              </Typography>
+            </Typography>
+          </Box>
+
+          <Chip
+            icon={isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+            label={`${stock.regularMarketChangePercent.toFixed(2)}%`}
+            size="small"
+            sx={{
+              fontWeight: 600,
+              bgcolor: isPositive ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+              color: isPositive ? '#4ade80' : '#f87171',
+              backdropFilter: 'blur(12px)',
+              '& .MuiChip-icon': {
+                color: isPositive ? '#4ade80' : '#f87171',
+              },
+            }}
           />
-        </button>
-      </div>
-
-      <div className="relative z-10 mt-6 flex items-end justify-between">
-        <div className="flex flex-col">
-          <span className="text-3xl font-bold tracking-tighter text-white">
-            {stock.regularMarketPrice.toFixed(2)} <span className="text-lg font-medium text-gray-500">₺</span>
-          </span>
-        </div>
-
-        <div
-          className={cn(
-            'flex items-center space-x-1 rounded-full px-3 py-1 text-sm font-semibold backdrop-blur-md',
-            isPositive ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
-          )}
-        >
-          {isPositive ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
-          <span>{stock.regularMarketChangePercent.toFixed(2)}%</span>
-        </div>
-      </div>
-    </motion.div>
+        </Box>
+      </CardContent>
+    </Card>
   );
 }
