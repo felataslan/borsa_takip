@@ -5,11 +5,12 @@ import { Stock } from '@/types/stock.types';
 const yahooFinance = new YahooFinance({ suppressNotices: ['yahooSurvey'] });
 
 import { BIST_SECTORS, getAllBistSymbols } from '@/data/bist-sectors';
-import { BIST_100 } from '@/data/bist-indexes';
+import { BIST_100, RECENT_IPOS } from '@/data/bist-indexes';
 
 export async function GET() {
   try {
-    const allSymbols = Array.from(new Set([...getAllBistSymbols(), ...BIST_100]));
+    const ipoSymbols = RECENT_IPOS.map(ipo => ipo.symbol);
+    const allSymbols = Array.from(new Set([...getAllBistSymbols(), ...BIST_100, ...ipoSymbols]));
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const results = await yahooFinance.quote(allSymbols) as any[];

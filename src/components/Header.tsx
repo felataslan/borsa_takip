@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AppBar, Toolbar, Typography, Button, Box, Container } from '@mui/material';
-import { Activity, Star, TrendingUp, Map } from 'lucide-react';
+import { Activity, Star, TrendingUp, Map, Rocket } from 'lucide-react';
 
 export default function Header() {
   const pathname = usePathname();
@@ -68,6 +68,21 @@ export default function Header() {
               }}
             >
               BİST 100
+            </Button>
+
+            <Button
+              component={Link}
+              href="/halkaarz"
+              startIcon={<Rocket size={16} />}
+              sx={{
+                color: pathname === '/halkaarz' ? 'text.primary' : 'text.secondary',
+                fontWeight: 500,
+                textTransform: 'none',
+                display: { xs: 'none', sm: 'flex' },
+                '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
+              }}
+            >
+              Halka Arzlar
             </Button>
 
             <Button
