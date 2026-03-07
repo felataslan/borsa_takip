@@ -3,14 +3,16 @@
 import React, { useEffect, useState } from 'react';
 import { Stock } from '@/types/stock.types';
 import StockCard from '@/components/StockCard';
-import { Activity } from 'lucide-react';
+import { Activity, Search } from 'lucide-react';
 
-import { Box, Container, Typography, CircularProgress, Alert } from '@mui/material';
+import { Box, Container, Typography, CircularProgress, Alert, TextField, Select, MenuItem, FormControl, InputLabel, InputAdornment } from '@mui/material';
 
 export default function Home() {
   const [stocks, setStocks] = useState<Stock[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSector, setSelectedSector] = useState('All');
 
   useEffect(() => {
     async function fetchStocks() {
@@ -35,8 +37,26 @@ export default function Home() {
   }, []);
 
   const renderStocks = () => {
-    // Group stocks by sector
-    const groupedStocks = stocks.reduce((acc, stock) => {
+    // Filter stocks first
+    const filteredStocks = stocks.filter((stock) => {
+      const matchesSearch = stock.symbol.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            stock.shortName.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSector = selectedSector === 'All' || stock.sector === selectedSector;
+      return matchesSearch && matchesSector;
+    });
+
+    if (filteredStocks.length === 0) {
+      return (
+        <Box sx={{ textAlign: 'center', mt: 8, p: 4, bgcolor: 'rgba(17, 24, 39, 0.5)', borderRadius: 4, backdropFilter: 'blur(12px)', border: '1px solid rgba(31, 41, 55, 1)' }}>
+          <Search size={48} color="rgba(55, 65, 81, 1)" style={{ margin: '0 auto 16px' }} />
+          <Typography variant="h6" color="text.primary" gutterBottom>Arama kriterlerinize uygun hisse bulunamadı.</Typography>
+          <Typography variant="body2" color="text.secondary">Lütfen farklı bir arama terimi veya sektör seçerek tekrar deneyin.</Typography>
+        </Box>
+      );
+    }
+
+    // Group filtered stocks by sector
+    const groupedStocks = filteredStocks.reduce((acc, stock) => {
       const sector = stock.sector || 'Diğer';
       if (!acc[sector]) {
         acc[sector] = [];
@@ -107,7 +127,40 @@ export default function Home() {
           </Alert>
         </Box>
       ) : (
-        renderStocks()
+        <>
+          <Box sx={{ mb: 4, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, position: 'relative', zIndex: 10 }}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Hisse sembolü veya adı ara..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search color="#9ca3af" size={20} />
+                  </InputAdornment>
+                ),
+                sx: { bgcolor: 'rgba(17, 24, 39, 0.5)', backdropFilter: 'blur(12px)' }
+              }}
+            />
+            <FormControl fullWidth sx={{ minWidth: { sm: 240 }, bgcolor: 'rgba(17, 24, 39, 0.5)', backdropFilter: 'blur(12px)', borderRadius: 1 }}>
+              <InputLabel id="sector-select-label">Sektör</InputLabel>
+              <Select
+                labelId="sector-select-label"
+                value={selectedSector}
+                label="Sektör"
+                onChange={(e) => setSelectedSector(e.target.value)}
+              >
+                <MenuItem value="All">Tüm Sektörler</MenuItem>
+                {Array.from(new Set(stocks.map(s => s.sector || 'Diğer'))).sort().map((sector) => (
+                  <MenuItem key={sector} value={sector}>{sector}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+          {renderStocks()}
+        </>
       )}
       
       {/* Background decoration elements */}
