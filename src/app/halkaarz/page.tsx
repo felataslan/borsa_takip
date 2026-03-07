@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { Stock } from '@/types/stock.types';
 import { Rocket, TrendingUp, TrendingDown, Clock } from 'lucide-react';
 import { Box, Container, Typography, CircularProgress, Alert, Card, CardContent, Chip } from '@mui/material';
-import { RECENT_IPOS } from '@/data/bist-indexes';
 import { motion } from 'framer-motion';
 
 // dynamically import recharts to avoid SSR issues
@@ -25,6 +24,21 @@ interface IPOData extends Stock {
   totalReturnPercent: number;
 }
 
+interface APIStockData {
+  symbol: string;
+  name?: string;
+  shortName?: string;
+  price?: number;
+  regularMarketPrice?: number;
+  changePercent?: number;
+  regularMarketChangePercent?: number;
+  previousClose?: number;
+  description?: string;
+  ipoPrice?: number;
+  ipoDate?: string;
+  ipoName?: string;
+}
+
 export default function IposPage() {
   const [ipoStocks, setIpoStocks] = useState<IPOData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,30 +47,31 @@ export default function IposPage() {
   useEffect(() => {
     async function fetchStocks() {
       try {
-        const response = await fetch('/api/stocks');
+        const response = await fetch('/api/stocks?index=HALKAARZ');
         if (!response.ok) {
           throw new Error('Veriler gelirken bir hata oluştu');
         }
-        const data: Stock[] = await response.json();
         
-        // Merge API data with static IPO metadata
-        const mergedData: IPOData[] = RECENT_IPOS.map(ipo => {
-          const apiStock = data.find(s => s.symbol === ipo.symbol);
-          const currentPrice = apiStock ? apiStock.regularMarketPrice : ipo.ipoPrice; // fallback to ipo if not trading yet
-          
-          // Calculate total return since IPO
-          const totalReturnPercent = ((currentPrice - ipo.ipoPrice) / ipo.ipoPrice) * 100;
+        const data: APIStockData[] = await response.json();
+        
+        // Finalize the calculation for total return percentage
+        const mergedData: IPOData[] = data.map(stock => {
+          const currentPrice = stock.regularMarketPrice || stock.price || stock.ipoPrice || 0;
+          let totalReturnPercent = 0;
+          if (stock.ipoPrice) {
+             totalReturnPercent = ((currentPrice - stock.ipoPrice) / stock.ipoPrice) * 100;
+          }
           
           return {
-            symbol: ipo.symbol,
-            shortName: apiStock ? apiStock.shortName : ipo.symbol,
+            symbol: stock.symbol,
+            shortName: stock.shortName || stock.name || stock.symbol,
             regularMarketPrice: currentPrice,
-            regularMarketChangePercent: apiStock ? apiStock.regularMarketChangePercent : 0,
-            regularMarketChange: apiStock ? apiStock.regularMarketChange : 0,
+            regularMarketChangePercent: stock.regularMarketChangePercent || stock.changePercent || 0,
+            regularMarketChange: 0,
             currency: 'TRY',
-            ipoPrice: ipo.ipoPrice,
-            ipoDate: ipo.ipoDate,
-            ipoName: ipo.name,
+            ipoPrice: stock.ipoPrice || 0,
+            ipoDate: stock.ipoDate || 'Bilinmiyor',
+            ipoName: stock.ipoName || stock.shortName || stock.symbol,
             totalReturnPercent,
           };
         }).sort((a, b) => b.totalReturnPercent - a.totalReturnPercent);
@@ -70,6 +85,7 @@ export default function IposPage() {
     }
     fetchStocks();
     
+    // Refresh only every 5 minutes to avoid hitting the scraper API too often
     const interval = setInterval(fetchStocks, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
