@@ -19,9 +19,7 @@ export const metadata: Metadata = {
 };
 
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import theme from '@/theme/theme';
+import ThemeProviderWrapper from '@/theme/ThemeProvider';
 
 export default function RootLayout({
   children,
@@ -29,18 +27,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr" className="dark">
+    <html lang="tr" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased bg-black text-white selection:bg-green-500/30`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased selection:bg-green-500/30`}
       >
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
+          <ThemeProviderWrapper>
             <div className="relative flex min-h-screen flex-col">
               <Header />
               <main className="flex-1">{children}</main>
             </div>
-          </ThemeProvider>
+          </ThemeProviderWrapper>
         </AppRouterCacheProvider>
       </body>
     </html>

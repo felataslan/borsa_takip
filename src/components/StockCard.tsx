@@ -38,12 +38,14 @@ export default function StockCard({ stock, index = 0 }: StockCardProps) {
         flexDirection: 'column',
         justifyContent: 'space-between',
         overflow: 'hidden',
-        bgcolor: 'rgba(17, 24, 39, 0.5)', // gray-900/50
+        bgcolor: 'background.paper', 
+        border: '1px solid',
+        borderColor: 'transparent',
         backdropFilter: 'blur(12px)',
         transition: 'all 0.2s ease-in-out',
         '&:hover': {
-          borderColor: 'rgba(55, 65, 81, 1)', // gray-700
-          boxShadow: '0 20px 25px -5px rgba(17, 24, 39, 0.5), 0 8px 10px -6px rgba(17, 24, 39, 0.5)',
+          borderColor: 'divider',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
         },
       }}
     >
@@ -56,11 +58,11 @@ export default function StockCard({ stock, index = 0 }: StockCardProps) {
           width: 128,
           transform: 'translate(32px, -32px)',
           borderRadius: '50%',
-          background: 'linear-gradient(to bottom right, rgba(31, 41, 55, 0.4), transparent)',
+          background: 'linear-gradient(to bottom right, rgba(156, 163, 175, 0.1), transparent)',
           filter: 'blur(24px)',
           transition: 'all 0.2s',
           '.MuiCard-root:hover &': {
-            background: 'linear-gradient(to bottom right, rgba(55, 65, 81, 0.4), transparent)',
+            background: 'linear-gradient(to bottom right, rgba(156, 163, 175, 0.2), transparent)',
           },
         }}
       />
@@ -85,7 +87,7 @@ export default function StockCard({ stock, index = 0 }: StockCardProps) {
             aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
             sx={{
               color: favorite ? '#eab308' : 'text.secondary', // yellow-500
-              '&:hover': { color: favorite ? '#facc15' : 'text.primary', bgcolor: 'rgba(31, 41, 55, 1)' },
+              '&:hover': { color: favorite ? '#facc15' : 'text.primary', bgcolor: 'rgba(156, 163, 175, 0.1)' },
             }}
           >
             <Star

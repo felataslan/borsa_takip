@@ -47,7 +47,7 @@ export default function Home() {
 
     if (filteredStocks.length === 0) {
       return (
-        <Box sx={{ textAlign: 'center', mt: 8, p: 4, bgcolor: 'rgba(17, 24, 39, 0.5)', borderRadius: 4, backdropFilter: 'blur(12px)', border: '1px solid rgba(31, 41, 55, 1)' }}>
+        <Box sx={{ textAlign: 'center', mt: 8, p: 4, bgcolor: 'background.paper', borderRadius: 4, backdropFilter: 'blur(12px)', border: '1px solid', borderColor: 'divider' }}>
           <Search size={48} color="rgba(55, 65, 81, 1)" style={{ margin: '0 auto 16px' }} />
           <Typography variant="h6" color="text.primary" gutterBottom>Arama kriterlerinize uygun hisse bulunamadı.</Typography>
           <Typography variant="body2" color="text.secondary">Lütfen farklı bir arama terimi veya sektör seçerek tekrar deneyin.</Typography>
@@ -75,7 +75,7 @@ export default function Home() {
                 fontWeight: 600,
                 color: 'text.primary',
                 borderBottom: '1px solid',
-                borderColor: 'rgba(31, 41, 55, 1)',
+                borderColor: 'divider',
                 pb: 1,
               }}
             >
@@ -141,10 +141,10 @@ export default function Home() {
                     <Search color="#9ca3af" size={20} />
                   </InputAdornment>
                 ),
-                sx: { bgcolor: 'rgba(17, 24, 39, 0.5)', backdropFilter: 'blur(12px)' }
+                sx: { bgcolor: 'background.paper', backdropFilter: 'blur(12px)' }
               }}
             />
-            <FormControl fullWidth sx={{ minWidth: { sm: 240 }, bgcolor: 'rgba(17, 24, 39, 0.5)', backdropFilter: 'blur(12px)', borderRadius: 1 }}>
+            <FormControl fullWidth sx={{ minWidth: { sm: 240 }, bgcolor: 'background.paper', backdropFilter: 'blur(12px)', borderRadius: 1 }}>
               <InputLabel id="sector-select-label">Sektör</InputLabel>
               <Select
                 labelId="sector-select-label"

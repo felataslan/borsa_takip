@@ -3,11 +3,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { AppBar, Toolbar, Typography, Button, Box, Container } from '@mui/material';
-import { Activity, Star, TrendingUp, Map, Rocket } from 'lucide-react';
+import { AppBar, Toolbar, Typography, Button, Box, Container, IconButton } from '@mui/material';
+import { Activity, Star, TrendingUp, Map, Rocket, Sun, Moon } from 'lucide-react';
+import { useAppTheme } from '@/theme/ThemeProvider';
 
 export default function Header() {
   const pathname = usePathname();
+  const { mode, toggleTheme } = useAppTheme();
 
   return (
     <AppBar position="sticky" elevation={0} sx={{ zIndex: 50 }}>
@@ -99,6 +101,19 @@ export default function Header() {
             >
               Favoriler
             </Button>
+
+            {/* Theme Toggle Button */}
+            <IconButton 
+              onClick={toggleTheme} 
+              sx={{ 
+                color: 'text.secondary',
+                ml: 1,
+                '&:hover': { color: 'text.primary', bgcolor: 'rgba(156, 163, 175, 0.1)' } 
+              }}
+              title={`Switch to ${mode === 'dark' ? 'light' : 'dark'} mode`}
+            >
+              {mode === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            </IconButton>
           </Box>
           
         </Toolbar>

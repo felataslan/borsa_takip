@@ -74,7 +74,7 @@ export default function IposPage() {
             ipoName: stock.ipoName || stock.shortName || stock.symbol,
             totalReturnPercent,
           };
-        }).sort((a, b) => b.totalReturnPercent - a.totalReturnPercent);
+        });
 
         setIpoStocks(mergedData);
       } catch (err) {
@@ -97,7 +97,7 @@ export default function IposPage() {
       const data = payload[0].payload as IPOData;
       const isPos = data.totalReturnPercent >= 0;
       return (
-        <Box sx={{ bgcolor: 'rgba(17, 24, 39, 0.9)', p: 2, borderRadius: 2, border: '1px solid rgba(55, 65, 81, 1)', backdropFilter: 'blur(8px)' }}>
+        <Box sx={{ bgcolor: 'background.paper', p: 2, borderRadius: 2, border: '1px solid', borderColor: 'divider', backdropFilter: 'blur(8px)' }}>
           <Typography variant="subtitle2" sx={{ color: 'text.secondary', mb: 1 }}>{data.ipoName} ({label})</Typography>
           <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 'bold' }}>Halka Arz: {data.ipoPrice.toFixed(2)} ₺</Typography>
           <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 'bold' }}>Anlık Fiyat: {data.regularMarketPrice.toFixed(2)} ₺</Typography>
@@ -135,7 +135,7 @@ export default function IposPage() {
       ) : (
         <>
           {/* Main Chart Section */}
-          <Box sx={{ mb: 6, position: 'relative', zIndex: 10, bgcolor: 'rgba(17, 24, 39, 0.3)', p: { xs: 2, md: 4 }, borderRadius: 4, border: '1px solid rgba(31, 41, 55, 1)' }}>
+          <Box sx={{ mb: 6, position: 'relative', zIndex: 10, bgcolor: 'background.paper', p: { xs: 2, md: 4 }, borderRadius: 4, border: '1px solid', borderColor: 'divider' }}>
             <Typography variant="h6" sx={{ color: 'text.primary', mb: 4, fontWeight: 'bold' }}>
               Halka Arz Sonrası Toplam Getiri (%)
             </Typography>
@@ -152,11 +152,11 @@ export default function IposPage() {
                       <stop offset="95%" stopColor="#e11d48" stopOpacity={0.8}/> {/* rose-600 */}
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(55, 65, 81, 0.4)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(156, 163, 175, 0.2)" vertical={false} />
                   <XAxis 
                     dataKey="symbol" 
                     stroke="#9ca3af" 
-                    tick={{ fill: '#d1d5db', fontSize: 13, fontWeight: 500 }} 
+                    tick={{ fill: '#9ca3af', fontSize: 13, fontWeight: 500 }} 
                     tickFormatter={(val) => val.replace('.IS', '')}
                     angle={-45}
                     textAnchor="end"
@@ -164,12 +164,12 @@ export default function IposPage() {
                   />
                   <YAxis 
                     stroke="#9ca3af" 
-                    tick={{ fill: '#d1d5db', fontWeight: 500 }}
+                    tick={{ fill: '#9ca3af', fontWeight: 500 }}
                     tickFormatter={(val) => `${val}%`}
                   />
                   <Tooltip 
                     content={<CustomTooltip />} 
-                    cursor={{ fill: 'rgba(255, 255, 255, 0.03)' }} 
+                    cursor={{ fill: 'rgba(156, 163, 175, 0.1)' }} 
                   />
                   <Bar dataKey="totalReturnPercent" radius={[6, 6, 0, 0]} animationDuration={1500}>
                     {ipoStocks.map((entry, index) => (
@@ -205,9 +205,10 @@ export default function IposPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: idx * 0.05 }}
                   sx={{
-                    bgcolor: 'rgba(17, 24, 39, 0.5)',
+                    bgcolor: 'background.paper',
                     backdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(31, 41, 55, 1)',
+                    border: '1px solid',
+                    borderColor: 'divider',
                     position: 'relative',
                     overflow: 'hidden'
                   }}
@@ -226,7 +227,7 @@ export default function IposPage() {
                         icon={<Clock size={14} />}
                         label={stock.ipoDate}
                         size="small"
-                        sx={{ bgcolor: 'rgba(55, 65, 81, 0.5)', color: 'text.secondary', '& .MuiChip-icon': { color: 'text.secondary' } }}
+                        sx={{ bgcolor: 'rgba(156, 163, 175, 0.1)', color: 'text.secondary', '& .MuiChip-icon': { color: 'text.secondary' } }}
                       />
                     </Box>
 
@@ -241,7 +242,7 @@ export default function IposPage() {
                       </Box>
                     </Box>
 
-                    <Box sx={{ mt: 3, pt: 2, borderTop: '1px solid rgba(55, 65, 81, 0.5)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box sx={{ mt: 3, pt: 2, borderTop: '1px solid', borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Typography variant="body2" sx={{ color: 'text.secondary' }}>Toplam Getiri:</Typography>
                       <Chip
                         icon={isPos ? <TrendingUp size={16} /> : <TrendingDown size={16} />}

@@ -1,21 +1,22 @@
 'use client';
 
-import { createTheme } from '@mui/material/styles';
+import { PaletteMode, ThemeOptions } from '@mui/material';
 
-const theme = createTheme({
+export const getTheme = (mode: PaletteMode): ThemeOptions => ({
   palette: {
-    mode: 'dark',
+    mode,
     primary: {
-      main: '#22c55e', // text-green-500 from Tailwind
+      main: '#22c55e', // text-green-500
     },
     background: {
-      default: '#000000', // bg-black from Tailwind
-      paper: '#111827', // dark gray card background
+      default: mode === 'dark' ? '#000000' : '#f9fafb', // bg-black vs bg-gray-50
+      paper: mode === 'dark' ? '#111827' : '#ffffff', // bg-gray-900 vs bg-white
     },
     text: {
-      primary: '#ffffff',
-      secondary: '#9ca3af', // text-gray-400
+      primary: mode === 'dark' ? '#ffffff' : '#111827', // text-white vs text-gray-900
+      secondary: mode === 'dark' ? '#9ca3af' : '#6b7280', // text-gray-400 vs text-gray-500
     },
+    divider: mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
   },
   typography: {
     fontFamily: 'var(--font-geist-sans), sans-serif',
@@ -25,7 +26,6 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 16,
-          border: '1px solid rgba(255, 255, 255, 0.1)',
           backgroundImage: 'none',
         },
       },
@@ -33,13 +33,11 @@ const theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: 'rgba(3, 7, 18, 0.8)', // bg-gray-950/80
+          backgroundColor: mode === 'dark' ? 'rgba(3, 7, 18, 0.8)' : 'rgba(255, 255, 255, 0.8)',
           backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(31, 41, 55, 1)', // border-gray-800
+          borderBottom: `1px solid ${mode === 'dark' ? 'rgba(31, 41, 55, 1)' : 'rgba(229, 231, 235, 1)'}`,
         },
       },
     },
   },
 });
-
-export default theme;

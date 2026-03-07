@@ -78,13 +78,13 @@ export default function Bist100Page() {
                     <Search color="#9ca3af" size={20} />
                   </InputAdornment>
                 ),
-                sx: { bgcolor: 'rgba(17, 24, 39, 0.5)', backdropFilter: 'blur(12px)' }
+                sx: { bgcolor: 'background.paper', backdropFilter: 'blur(12px)' }
               }}
             />
           </Box>
           
           {filteredStocks.length === 0 ? (
-            <Box sx={{ textAlign: 'center', mt: 8, p: 4, bgcolor: 'rgba(17, 24, 39, 0.5)', borderRadius: 4, backdropFilter: 'blur(12px)', border: '1px solid rgba(31, 41, 55, 1)' }}>
+            <Box sx={{ textAlign: 'center', mt: 8, p: 4, bgcolor: 'background.paper', borderRadius: 4, backdropFilter: 'blur(12px)', border: '1px solid', borderColor: 'divider' }}>
               <Search size={48} color="rgba(55, 65, 81, 1)" style={{ margin: '0 auto 16px' }} />
               <Typography variant="h6" color="text.primary" gutterBottom>Sonuç bulunamadı.</Typography>
             </Box>

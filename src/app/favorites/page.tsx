@@ -24,10 +24,11 @@ export default function FavoritesPage() {
       {favorites.length === 0 ? (
         <Box
           sx={{
-            bgcolor: 'rgba(17, 24, 39, 0.5)',
+            bgcolor: 'background.paper',
             p: 6,
             borderRadius: 4,
-            border: '1px solid rgba(31, 41, 55, 1)',
+            border: '1px solid',
+            borderColor: 'divider',
             textAlign: 'center',
             maxWidth: 'md',
             mx: 'auto',
