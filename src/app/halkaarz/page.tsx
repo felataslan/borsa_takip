@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Cell } from 'recharts';
 import { IPOStock } from '@/types/stock.types';
 import { Rocket, TrendingUp, TrendingDown, Clock } from 'lucide-react';
 import {
@@ -13,6 +14,7 @@ import {
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import PageHeader from '@/components/PageHeader';
+import { useAppTheme } from '@/theme/ThemeProvider';
 import LoadingState from '@/components/LoadingState';
 import ErrorState from '@/components/ErrorState';
 import BackgroundOrbs from '@/components/BackgroundOrbs';
@@ -29,7 +31,6 @@ const YAxis = dynamic(() => import('recharts').then((mod) => mod.YAxis), { ssr: 
 const CartesianGrid = dynamic(() => import('recharts').then((mod) => mod.CartesianGrid), { ssr: false });
 const Tooltip = dynamic(() => import('recharts').then((mod) => mod.Tooltip), { ssr: false });
 const ResponsiveContainer = dynamic(() => import('recharts').then((mod) => mod.ResponsiveContainer), { ssr: false });
-const Cell = dynamic(() => import('recharts').then((mod) => mod.Cell), { ssr: false });
 
 const BACKGROUND_ORBS = [
   { color: 'rgba(236, 72, 153, 0.05)', top: 120, left: 40 },
@@ -64,6 +65,7 @@ function toIPOStock(stock: Record<string, unknown>): IPOStock {
 }
 
 export default function IposPage() {
+  const { mode } = useAppTheme();
   const { data: rawData, loading, error } = useStocks<Record<string, unknown>>(
     '/api/stocks?index=HALKAARZ',
   );
@@ -140,7 +142,13 @@ export default function IposPage() {
                     {ipoStocks.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
-                        fill={entry.totalReturnPercent >= 0 ? 'url(#colorPos)' : 'url(#colorNeg)'}
+                        fill={
+                          mode === 'dark'
+                            ? '#ffffff'
+                            : entry.totalReturnPercent >= 0
+                            ? '#10b981'
+                            : '#f43f5e'
+                        }
                       />
                     ))}
                   </Bar>
