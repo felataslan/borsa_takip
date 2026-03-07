@@ -9,6 +9,7 @@
 - [x] MUI Grid yapısına entegre edilmiş, Framer Motion destekli estetik hisse başlıkları (StockCard)
 - [x] LocalStorage ve Zustand kullanılarak "Favoriler" sayfası (Bireysel listeye hisse ekleyip çıkarma)
 - [x] Ana sayfada kullanıcı arama deneyimini güçlendirmek için kelime ve sektöre göre filtreleme
+- [x] BİST 30 ve BİST 100 endekslerine ait listelerin çekilmesi ve menüden kendilerine özel dizinlere (`/bist30`, `/bist100`) yönlendirilmesi.
 - [x] Memory Bank dökümantasyonunun oluşturulması
 
 ## Bekleyen/İlerleyen Aşamalar (To Do / Backlog):

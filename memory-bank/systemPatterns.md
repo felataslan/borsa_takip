@@ -9,11 +9,11 @@ Uygulama **Next.js (App Router)** tabanlı bir tam yığın (Full-stack) mimari 
 
 ## Veri Akışı
 
-1. `src/app/page.tsx` yüklendiğinde `/api/stocks` endpointine GET isteği atılır.
-2. `/api/stocks` sunucu tarafında `getAllBistSymbols()` ile tüm tanımlı sembolleri çeker.
+1. `src/app/page.tsx`, `/bist30` veya `/bist100` sayfaları yüklendiğinde `/api/stocks` endpointine GET isteği atılır.
+2. `/api/stocks` sunucu tarafında `getAllBistSymbols()` ve `BIST_100` listelerinin birleşim kümesini (tüm tanımlı sembolleri) çeker.
 3. Sunucu, `YahooFinance` (v3) sınıfı üzerinden toplu (batch) istek atarak verileri tek seferde alır.
 4. Sunucu `symbolToSector` haritasını kullanarak dönen verilere ait oldukları sektör bilgisini ekler (`Stock` tipi).
-5. Frontend tarafı bu JSON verisini `stocks` state'ine kaydeder, kullanıcı arama/sektör filtresi işlemleri frontend tarafında eşzamanlı olarak gerçekleşir.
+5. Frontend tarafı bu JSON verisini `stocks` state'ine kaydeder, kullanıcı arama/sektör filtresi işlemleri veya endeks ayrıştırması frontend tarafında (Client Component'te) gerçekleşir.
 
 ## Durum Yönetimi (State Management)
 

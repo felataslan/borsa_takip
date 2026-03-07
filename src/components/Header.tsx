@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AppBar, Toolbar, Typography, Button, Box, Container } from '@mui/material';
-import { Activity, Star } from 'lucide-react';
+import { Activity, Star, TrendingUp, Map } from 'lucide-react';
 
 export default function Header() {
   const pathname = usePathname();
@@ -25,7 +25,7 @@ export default function Header() {
           </Link>
 
           {/* Navigation Section */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 2 } }}>
             <Button
               component={Link}
               href="/"
@@ -33,12 +33,43 @@ export default function Header() {
                 color: pathname === '/' ? 'text.primary' : 'text.secondary',
                 fontWeight: 500,
                 textTransform: 'none',
+                minWidth: 'auto',
                 '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
               }}
             >
-              Piyasalar
+              Sektörler
             </Button>
             
+            <Button
+              component={Link}
+              href="/bist30"
+              startIcon={<TrendingUp size={16} />}
+              sx={{
+                color: pathname === '/bist30' ? 'text.primary' : 'text.secondary',
+                fontWeight: 500,
+                textTransform: 'none',
+                display: { xs: 'none', sm: 'flex' },
+                '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
+              }}
+            >
+              BİST 30
+            </Button>
+
+            <Button
+              component={Link}
+              href="/bist100"
+              startIcon={<Map size={16} />}
+              sx={{
+                color: pathname === '/bist100' ? 'text.primary' : 'text.secondary',
+                fontWeight: 500,
+                textTransform: 'none',
+                display: { xs: 'none', sm: 'flex' },
+                '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
+              }}
+            >
+              BİST 100
+            </Button>
+
             <Button
               component={Link}
               href="/favorites"
@@ -47,6 +78,7 @@ export default function Header() {
                 color: pathname === '/favorites' ? 'text.primary' : 'text.secondary',
                 fontWeight: 500,
                 textTransform: 'none',
+                minWidth: 'auto',
                 '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
               }}
             >

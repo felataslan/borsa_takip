@@ -12,13 +12,14 @@ Borsa İstanbul (BİST) hisselerini takip etmek, güncel fiyat ve değişim oran
 
 1. **Canlı(ya yakın) Veri:** `yahoo-finance2` kütüphanesi üzerinden BİST hisselerinin (15 dk gecikmeli) güncel fiyat verilerinin çekilmesi.
 2. **Sektörel Gruplama:** 120'den fazla önemli BİST hissesinin "Bankacılık", "Holding", "Otomotiv", "Enerji" gibi mantıksal sektör grupları altında gösterilmesi.
-3. **Filtreleme & Arama:**
+3. **Endeks Takibi:** BİST 30 ve BİST 100 endekslerine ait hisselerin kendilerine ait özel sayfalarda direkt listelenebilmesi.
+4. **Filtreleme & Arama:**
    - Hisse adı veya sembolü ile metin araması.
    - Belirli bir sektöre göre filtreleme yapabilen açılır menü.
-4. **Favori Yönetimi:**
+5. **Favori Yönetimi:**
    - İstenilen hisselerin "Yıldız" ikonuna tıklanarak favorilere eklenmesi/çıkarılması.
    - Favorilerin tarayıcı üzerinde (Zustand ve LocalStorage ile) kalıcı olarak saklanması.
-5. **Modern Arayüz:** Material UI (MUI) ve Framer Motion kullanılarak geliştirilmiş, animasyonlu, karanlık mod (dark mode) odaklı, şık ve duyarlı tasarım.
+6. **Modern Arayüz:** Material UI (MUI) ve Framer Motion kullanılarak geliştirilmiş, animasyonlu, karanlık mod (dark mode) odaklı, şık ve duyarlı tasarım.
 
 ## Hedef Kitle
 

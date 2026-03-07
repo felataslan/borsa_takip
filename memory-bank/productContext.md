@@ -12,7 +12,7 @@ Piyasadaki borsa takip uygulamaları genellikle çok karmaşık, reklamlarla dol
 
 ## Beklenen Kullanıcı Deneyimi
 
-1. Kullanıcı ana sayfayı açar ve BİST hisselerini sektörlerine göre kategorize edilmiş temiz bir kart yapısında görür.
+1. Kullanıcı ana sayfayı açar ve BİST hisselerini sektörlerine göre kategorize edilmiş temiz bir kart yapısında görür. İstediği takdirde üst menüden piyasa hacmi en yüksek hisseleri listelemek için "BİST 30" veya "BİST 100" sayfalarına geçiş yapabilir.
 2. İlgilendiği sektörü veya belirli bir hisseyi üstteki arama çubuğu ve filtre yardımıyla anında bulur.
 3. Sürekli takip etmek istediği hisseleri yıldızlar ve "Favoriler" sekmesinde sadece onlara odaklanır. (Sayfayı kapatsa bile veriler tarayıcıda saklanır).
 4. Animasyonlar ve modern Material UI deneyimi ile uygulamanın akıcı bir his vermesi sağlanır.
