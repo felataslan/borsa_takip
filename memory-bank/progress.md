@@ -3,17 +3,22 @@
 ## Tamamlanan Özellikler:
 
 - [x] Temel Next.js proje yapısının oluşturulması
-- [x] (V3 güncellenmesi dahil) `yahoo-finance2` entegrasyonu ve Next.js API endpoint ile veri alınması
-- [x] ~120 hisseden oluşan BİST verisinin sektörlerine (`BIST_SECTORS`) göre ayrıştırılması
-- [x] Tamamen özelleştirilmiş, modern "Dark Mode" odaklı bir Material UI (MUI) teması ve bileşen tabanlı altyapı oluşturulması
-- [x] MUI Grid yapısına entegre edilmiş, Framer Motion destekli estetik hisse başlıkları (StockCard)
-- [x] LocalStorage ve Zustand kullanılarak "Favoriler" sayfası (Bireysel listeye hisse ekleyip çıkarma)
-- [x] Ana sayfada kullanıcı arama deneyimini güçlendirmek için kelime ve sektöre göre filtreleme
-- [x] BİST 30 ve BİST 100 endekslerine ait listelerin çekilmesi ve menüden kendilerine özel dizinlere (`/bist30`, `/bist100`) yönlendirilmesi.
-- [x] Memory Bank dökümantasyonunun oluşturulması
+- [x] `yahoo-finance2` (v3) entegrasyonu ve `/api/stocks` Next.js Route Handler ile veri alınması
+- [x] ~120 hisseden oluşan BİST verisinin `BIST_SECTORS` üzerinden sektörlere ayrıştırılması
+- [x] Özelleştirilmiş dark/light mode MUI teması (`ThemeProvider`, `getTheme`)
+- [x] Framer Motion entegre `StockCard` bileşeni (animasyonlu hover ve giriş efekti)
+- [x] Zustand + `persist` middleware ile Favoriler kalıcı durum yönetimi
+- [x] Ana sayfada hisse adı/sembolü araması + sektör dropdown filtresi
+- [x] BİST 30 ve BİST 100 sayfaları (`/bist30`, `/bist100`)
+- [x] Halka Arzlar sayfası (`/halkaarz`): IPO listesi scraping + Recharts bar grafiği
+- [x] **Tam refactör:** Paylaşımlı hook'lar (`useStocks`, `useStockFilter`) ve UI bileşenleri (`PageHeader`, `LoadingState`, `ErrorState`, `StockGrid`, `BackgroundOrbs`, `IpoTooltip`) oluşturuldu; tüm sayfalardaki kod tekrarı giderildi
+- [x] `Stock` ve `IPOStock` TypeScript tip sistemi genişletildi
+- [x] `npm run build` ve `npm run lint` sıfır hata ile geçmekte
 
-## Bekleyen/İlerleyen Aşamalar (To Do / Backlog):
+## Bekleyen/İlerleyen Aşamalar (Backlog):
 
-- [ ] Olası bir detay sayfasına gidilerek hisse içi çizgi grafiklerinin (charts) veya detaylı bilançonun gösterilmesi.
-- [ ] Gecikmeli kote edilen (15 dakika) verinin, "Son Güncellenme Saati" gibi uyarı veya bilgi bariyerleriyle kullanıcıya yansıtılması.
-- [ ] Uygulamanın performans metriklerinin test edilip Vercel'e (ya da statik hostlara) dağıtılması.
+- [ ] Hisse detay sayfası (tıklama ile geçmiş fiyat grafiği veya bilanço bilgisi)
+- [ ] Arama kutusuna debounce eklenmesi
+- [ ] Veriler için SWR/React Query entegrasyonu (şu an `fetch` + `setInterval`)
+- [ ] Uygulamanın Vercel'e deploy edilmesi
+- [ ] "15 dk gecikmeli" veri uyarısının UI'da açıkça gösterilmesi

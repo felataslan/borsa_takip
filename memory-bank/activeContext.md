@@ -2,14 +2,21 @@
 
 ## Son Yapılan Değişiklikler
 
-- **BİST 30 & BİST 100 Sayfaları:** Borsa İstanbul'un ana endeksleri olan BİST 30 ve BİST 100 hisselerinin özel olarak listelendiği, filtrelenebildiği iki yeni sayfa (`/bist30`, `/bist100`) oluşturuldu ve navigasyona eklendi.
-- **Filtreleme Özellikleri:** Ana sayfadaki hisse listesi için arama kutusu ve sektör bazlı dropdown filtresi eklendi (MUI tabanlı `TextField` ve `Select`).
-- **Material UI Geçişi:** Proje genelinde Tailwind CSS bileşenlerinden, Material UI (`AppBar`, `Card`, `Container`, `Box`, `Typography`, vs.) yapısına geçildi. Karanlık tema (Dark Mode) renk paleti uyumlu şekilde entegre edildi.
-- **Sektörel Gruplandırma:** API (sunucu tarafı) artık aldığı tüm BIST sembollerini statik bir JSON sözlüğü üzerinden ait oldukları sektöre atıyor, ardından istemciye dönüyor. Gelen hisse senetleri (arama filtresi uygulandıktan sonra) frontend üzerinde ait oldukları sektör başlığına göre gruplanarak görüntüleniyor.
-- **Memory Bank:** Mevcut durumun anlaşılabilmesi adına projeye `memory-bank` klasörü ve detaylı dökümantasyon eklendi.
+- **Tam Refactör (2026-03-07):** Projedeki tüm kaynak kodlar best-practice'e uygun şekilde yeniden yapılandırıldı.
+  - **Paylaşımlı Hook'lar** (`src/hooks/`): `useStocks.ts` (fetch + auto-refresh + loading/error) ve `useStockFilter.ts` (memoized arama + sektör filtresi) oluşturuldu; her sayfada tekrar yazılan bu mantık kaldırıldı.
+  - **Paylaşımlı Bileşenler** (`src/components/`): `PageHeader`, `LoadingState`, `ErrorState`, `StockGrid`, `BackgroundOrbs`, `IpoTooltip` bileşenleri oluşturuldu.
+  - **Tip Sistemi:** `Stock` tipine opsiyonel IPO alanları eklendi; `IPOStock` arayüzü tanımlandı; `halkaarz/page.tsx`'te kopyalanan yerel tipler silindi.
+  - **Tema:** `theme.ts`'teki gereksiz `'use client'` direktifi kaldırıldı.
+  - **Temizlik:** `test.tsx`, `test2.tsx`, `get_activity_svg.js` silindi.
+  - **Favoriler sayfasına arama kutusu eklendi** (önceden yoktu).
+  - `npm run build` ve `npm run lint` sıfır hata ile geçiyor.
+
+- **Halka Arzlar Sayfası (`/halkaarz`):** `halkarz.com` scraping ile son 3 aya ait IPO hisselerinin halka arz fiyatına göre toplam getirisi gösterilmekte; Recharts `BarChart` ile görselleştirilmektedir.
+- **Dark/Light Mode:** `ThemeProvider` localStorage üzerinden temayı hatırlar ve sistem tercihine göre varsayılan belirler.
 
 ## Gelecek Planı veya Olası Eklemeler
 
-- Arama kutusunun debounced (gecikmeli/optimize edilmiş) şekilde çalışması eklenebilir.
-- Farklı para birimleri (USD, EUR) üzerinden veya hisse senedi teknik grafikleri (grafik/chart API üzerinden) gösterimi eklenebilir.
-- Sık yenilenen verilerin optimizasyonu için `SWR` veya `React Query` gibi bir veri çekme (data fetching) kütüphanesi kullanılabilir.
+- Arama kutusuna debounce eklenebilir (performans optimizasyonu).
+- Hisse detay sayfası: tıklanan hisse için geçmiş fiyat grafiği veya bilanço bilgisi.
+- `SWR` veya `React Query` kullanılarak veri önbelleğe alınabilir (şu an vanilla `fetch` + `setInterval` kullanılıyor).
+- Vercel'e deploy ve `15 dk gecikmeli` bildiriminin UI'a işlenmesi.

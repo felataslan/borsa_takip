@@ -1,5 +1,3 @@
-'use client';
-
 import { PaletteMode, ThemeOptions } from '@mui/material';
 
 export const getTheme = (mode: PaletteMode): ThemeOptions => ({

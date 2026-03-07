@@ -2,26 +2,92 @@
 
 ## Mimari
 
-Uygulama **Next.js (App Router)** tabanlı bir tam yığın (Full-stack) mimari kullanmaktadır.
+Uygulama **Next.js 16 (App Router)** tabanlı full-stack bir mimari kullanmaktadır.
 
-- **Frontend:** React, Material UI (MUI), Framer Motion kombinasyonuyla istemci tarafında render edilen (Client Components - `use client`) sayfalar.
-- **Backend (API):** Next.js Route Handlers (`/app/api/...`) aracılığıyla oluşturulan hafif bir middleware. İstemciden gelen istekleri alıp, `yahoo-finance2` üzerinden 3. parti veri kaynağından bilgileri alır, formatlar ve client'a JSON olarak döner.
+- **Frontend:** React 19, Material UI (MUI), Framer Motion. Tüm sayfa bileşenleri `'use client'` direktifi ile istemci tarafında çalışır.
+- **Backend:** Next.js Route Handler (`/api/stocks`) — `yahoo-finance2` ile veri çekme, sektör eşleştirme ve halkaarz scraping işlemleri burada gerçekleşir.
+
+---
 
 ## Veri Akışı
 
-1. `src/app/page.tsx`, `/bist30` veya `/bist100` sayfaları yüklendiğinde `/api/stocks` endpointine GET isteği atılır.
-2. `/api/stocks` sunucu tarafında `getAllBistSymbols()` ve `BIST_100` listelerinin birleşim kümesini (tüm tanımlı sembolleri) çeker.
-3. Sunucu, `YahooFinance` (v3) sınıfı üzerinden toplu (batch) istek atarak verileri tek seferde alır.
-4. Sunucu `symbolToSector` haritasını kullanarak dönen verilere ait oldukları sektör bilgisini ekler (`Stock` tipi).
-5. Frontend tarafı bu JSON verisini `stocks` state'ine kaydeder, kullanıcı arama/sektör filtresi işlemleri veya endeks ayrıştırması frontend tarafında (Client Component'te) gerçekleşir.
+```
+Sayfa yüklenir
+  → useStocks('/api/stocks') hook'u fetch atar
+  → /api/stocks Route Handler:
+      1. getDynamicIPOs() scraper (12 saatlik bellek cache'i ile)
+      2. getAllBistSymbols() + BIST_100 + IPO sembollerinin birleşim kümesi
+      3. yahooFinance.quote(allSymbols) toplu istek
+      4. symbolToSector haritası ile sektör bilgisi eklenir
+      5. JSON formatında client'a döner
+  → Client, useStockFilter hook'u ile arama / sektör filtrelemesi yapar
+  → StockCard / StockGrid bileşenleri render eder
+  → setInterval ile 5 dakikada bir otomatik yenileme
+```
 
-## Durum Yönetimi (State Management)
+---
 
-- **Global / Kalıcı Durum:** Kullanıcının favori hisseleri bilgisini tutmak için `Zustand` kullanılmaktadır. Bu durum, `persist` middleware'i ile `localStorage`'a kaydedilir (`useFavoritesStore.ts`).
-- **Lokal Durum:** Ana sayfadaki hisse listesi, yükleniyor (loading) mekanizmaları, arama terimi (`searchQuery`) ve seçili sektör (`selectedSector`) React `useState` ile sayfa seviyesinde yönetilir.
+## Hook Mimarisi (Paylaşımlı Mantık)
 
-## Stil ve Tasarım Sistemleri
+| Hook             | Dosya                         | Amaç                                                                  |
+| ---------------- | ----------------------------- | --------------------------------------------------------------------- |
+| `useStocks<T>`   | `src/hooks/useStocks.ts`      | Generic fetch + auto-refresh + loading/error state                    |
+| `useStockFilter` | `src/hooks/useStockFilter.ts` | Memoized arama + sektör filtresi; döner `filteredStocks` ve `sectors` |
 
-- Proje ilk başta **Tailwind CSS** kullanılarak başlatılmış olsa da, daha sonra tamamen **Material UI (MUI)** yapısına geçirilmiştir.
-- `src/theme/theme.ts` içerisinde Tailwind'in `gray-900`/`green-500` gibi renk tonlarını taklit eden bir MUI `createTheme` tanımı bulunmaktadır.
-- Animasyonlu geçişler için `framer-motion` bileşenleri MUI komponentleriyle entegre edilerek (örn: `<Card component={motion.div} ... />`) kullanılmaktadır.
+---
+
+## Bileşen Mimarisi (Paylaşımlı UI)
+
+| Bileşen          | Amaç                                                         |
+| ---------------- | ------------------------------------------------------------ |
+| `PageHeader`     | Sayfa başlığı + altyazı bloğu                                |
+| `LoadingState`   | Merkezi `CircularProgress`                                   |
+| `ErrorState`     | Merkezi hata `Alert`                                         |
+| `StockGrid`      | Arama alanı + esnek grid + boş durum                         |
+| `BackgroundOrbs` | Sabit dekor efektleri                                        |
+| `IpoTooltip`     | Recharts bar grafiği tooltip (stable referans için dışarıda) |
+| `StockCard`      | Tek hisse kartı (Framer Motion, favori toggle)               |
+| `Header`         | Navigasyon AppBar + dark/light mode toggle                   |
+
+---
+
+## Durum Yönetimi
+
+- **Global / Kalıcı:** `useFavoritesStore` (Zustand + `persist` → `localStorage`)
+- **Sunucu Cache:** `getDynamicIPOs()` içinde 12 saatlik bellek cache (module-level değişken)
+- **Lokal:** `useState` (searchQuery, selectedSector, loading, data vb.)
+
+---
+
+## Stil ve Tasarım Sistemi
+
+- **Material UI (MUI)** ana bileşen kütüphanesi; `src/theme/theme.ts` içinde `PaletteMode` bazlı `ThemeOptions` tanımı.
+- **Tailwind CSS** sınıfları layout için hâlâ `layout.tsx`'te kullanılmaktadır (`min-h-screen`, `antialiased` vb.).
+- **Framer Motion**: `StockCard` ve `halkaarz` kart animasyonları için MUI `Card` ile birlikte `component={motion.div}` olarak kullanılır.
+- **Lucide React**: Tüm ikonlar için tek kaynak.
+
+---
+
+## Tip Sistemi
+
+```typescript
+// src/types/stock.types.ts
+interface Stock {
+  symbol;
+  shortName;
+  price;
+  changePercent;
+  change;
+  currency;
+  sector?;
+  ipoPrice?;
+  ipoDate?;
+  ipoName?;
+}
+interface IPOStock extends Stock {
+  ipoPrice;
+  ipoDate;
+  ipoName(required);
+  totalReturnPercent;
+}
+```
