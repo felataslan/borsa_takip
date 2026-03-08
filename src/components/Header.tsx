@@ -49,102 +49,31 @@ export default function Header() {
 
           {/* Desktop Navigation Section */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 2 } }}>
-            <Button
-              component={Link}
-              href="/"
-              sx={{
-                color: pathname === '/' ? 'text.primary' : 'text.secondary',
-                fontWeight: 500,
-                textTransform: 'none',
-                display: { xs: 'none', sm: 'flex' },
-                '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
-              }}
-            >
-              Sektörler
-            </Button>
-            
-            <Button
-              component={Link}
-              href="/bist30"
-              startIcon={<TrendingUp size={16} />}
-              sx={{
-                color: pathname === '/bist30' ? 'text.primary' : 'text.secondary',
-                fontWeight: 500,
-                textTransform: 'none',
-                display: { xs: 'none', sm: 'flex' },
-                '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
-              }}
-            >
-              BİST 30
-            </Button>
-
-            <Button
-              component={Link}
-              href="/bist100"
-              startIcon={<Map size={16} />}
-              sx={{
-                color: pathname === '/bist100' ? 'text.primary' : 'text.secondary',
-                fontWeight: 500,
-                textTransform: 'none',
-                display: { xs: 'none', sm: 'flex' },
-                '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
-              }}
-            >
-              BİST 100
-            </Button>
-
-            <Button
-              component={Link}
-              href="/halkaarz"
-              startIcon={<Rocket size={16} />}
-              sx={{
-                color: pathname === '/halkaarz' ? 'text.primary' : 'text.secondary',
-                fontWeight: 500,
-                textTransform: 'none',
-                display: { xs: 'none', sm: 'flex' },
-                '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
-              }}
-            >
-              Halka Arzlar
-            </Button>
-
-            <Button
-              component={Link}
-              href="/favorites"
-              startIcon={<Star size={16} />}
-              sx={{
-                color: pathname === '/favorites' ? 'text.primary' : 'text.secondary',
-                fontWeight: 500,
-                textTransform: 'none',
-                display: { xs: 'none', sm: 'flex' },
-                '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
-              }}
-            >
-              Favoriler
-            </Button>
-
-            <Button
-              component={Link}
-              href="/hesabim"
-              startIcon={<Wallet size={16} />}
-              sx={{
-                color: pathname === '/hesabim' ? 'text.primary' : 'text.secondary',
-                fontWeight: 500,
-                textTransform: 'none',
-                display: { xs: 'none', sm: 'flex' },
-                '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
-              }}
-            >
-              Hesabım
-            </Button>
+            {navItems.map((item) => (
+              <Button
+                key={item.href}
+                component={Link}
+                href={item.href}
+                startIcon={<Box component="span" sx={{ display: 'flex' }}>{item.icon}</Box>}
+                sx={{
+                  color: pathname === item.href ? 'text.primary' : 'text.secondary',
+                  fontWeight: 500,
+                  textTransform: 'none',
+                  display: { xs: 'none', sm: 'flex' },
+                  '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
+                }}
+              >
+                {item.label}
+              </Button>
+            ))}
 
             {/* Theme Toggle Button */}
-            <IconButton 
-              onClick={toggleTheme} 
-              sx={{ 
+            <IconButton
+              onClick={toggleTheme}
+              sx={{
                 color: 'text.secondary',
                 ml: 1,
-                '&:hover': { color: 'text.primary', bgcolor: 'rgba(156, 163, 175, 0.1)' } 
+                '&:hover': { color: 'text.primary', bgcolor: 'rgba(156, 163, 175, 0.1)' },
               }}
               title={`Switch to ${mode === 'dark' ? 'light' : 'dark'} mode`}
             >

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Cell } from 'recharts';
 import { IPOStock } from '@/types/stock.types';
 import { Rocket, TrendingUp, TrendingDown, Clock } from 'lucide-react';
@@ -21,7 +21,7 @@ import LoadingState from '@/components/LoadingState';
 import ErrorState from '@/components/ErrorState';
 import BackgroundOrbs from '@/components/BackgroundOrbs';
 import IpoTooltip from '@/components/IpoTooltip';
-import { useStocks } from '@/hooks/useStocks';
+import { useFetch } from '@/hooks/useFetch';
 
 // Dynamically import recharts to avoid SSR issues
 import dynamic from 'next/dynamic';
@@ -68,8 +68,9 @@ function toIPOStock(stock: Record<string, unknown>): IPOStock {
 
 export default function IposPage() {
   const { mode } = useAppTheme();
-  const { data: rawData, loading, error } = useStocks<Record<string, unknown>>(
+  const { data: rawData, loading, error } = useFetch<Record<string, unknown>[]>(
     '/api/stocks?index=HALKAARZ',
+    { initialData: [] }
   );
 
   const [userLots, setUserLots] = useState<Record<string, number>>({});
@@ -82,7 +83,7 @@ export default function IposPage() {
     }));
   };
 
-  const ipoStocks: IPOStock[] = rawData.map(toIPOStock);
+  const ipoStocks: IPOStock[] = useMemo(() => rawData.map(toIPOStock), [rawData]);
 
   return (
     <Container

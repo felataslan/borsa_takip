@@ -13,15 +13,20 @@ export async function GET(request: Request) {
 
     let allSymbols: string[] = [];
     let dynamicIPOs: IPOData[] = [];
-    
+
     if (index === 'HALKAARZ') {
-       dynamicIPOs = await getDynamicIPOs();
-       allSymbols = dynamicIPOs.map(ipo => ipo.symbol);
+      dynamicIPOs = await getDynamicIPOs();
+      allSymbols = dynamicIPOs.map((ipo) => ipo.symbol);
+    } else if (index === 'BIST30') {
+      const { BIST_30 } = await import('@/data/bist-indexes');
+      allSymbols = BIST_30;
+    } else if (index === 'BIST100') {
+      allSymbols = BIST_100;
     } else {
-       // Global fetch for other pages
-       dynamicIPOs = await getDynamicIPOs();
-       const ipoSymbols = dynamicIPOs.map(ipo => ipo.symbol);
-       allSymbols = Array.from(new Set([...getAllBistSymbols(), ...BIST_100, ...ipoSymbols]));
+      // Global fetch for other pages (Ana sayfa — sektörlere göre)
+      dynamicIPOs = await getDynamicIPOs();
+      const ipoSymbols = dynamicIPOs.map((ipo) => ipo.symbol);
+      allSymbols = Array.from(new Set([...getAllBistSymbols(), ...BIST_100, ...ipoSymbols]));
     }
     
     const results = await yahooFinance.quote(allSymbols) as Record<string, unknown>[];

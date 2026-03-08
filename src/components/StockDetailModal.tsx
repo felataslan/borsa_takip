@@ -11,6 +11,7 @@ import {
 import { X, TrendingUp, TrendingDown, Star } from 'lucide-react';
 import { Stock } from '@/types/stock.types';
 import StockHistoryChart from './StockHistoryChart';
+import StockNews from './StockNews';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 
 interface StockDetailModalProps {
@@ -129,12 +130,17 @@ export default function StockDetailModal({ open, onClose, stock }: StockDetailMo
       <DialogContent sx={{ p: { xs: 2, sm: 3 } }}>
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 300px' }, gap: 4 }}>
           
-          {/* Main Chart Section */}
-          <Box sx={{ height: 350 }}>
-            <StockHistoryChart 
-              symbol={stock.symbol} 
-              onDataUpdate={(label, pct, val) => setDynamicChange({ label, pct, val })}
-            />
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <Box sx={{ height: 350 }}>
+              <StockHistoryChart 
+                symbol={stock.symbol} 
+                onDataUpdate={(label, pct, val) => setDynamicChange({ label, pct, val })}
+              />
+            </Box>
+            
+            <Divider />
+            
+            <StockNews symbol={stock.symbol} />
           </Box>
 
            {/* Right Sidebar Stats Sections */}

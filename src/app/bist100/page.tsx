@@ -9,9 +9,8 @@ import ErrorState from '@/components/ErrorState';
 import BackgroundOrbs from '@/components/BackgroundOrbs';
 import { Map } from 'lucide-react';
 import { Container } from '@mui/material';
-import { useStocks } from '@/hooks/useStocks';
+import { useFetch } from '@/hooks/useFetch';
 import { useStockFilter } from '@/hooks/useStockFilter';
-import { BIST_100 } from '@/data/bist-indexes';
 
 const BACKGROUND_ORBS = [
   { color: 'rgba(147, 51, 234, 0.05)', top: 80, right: 0 },
@@ -19,12 +18,10 @@ const BACKGROUND_ORBS = [
 ];
 
 export default function Bist100Page() {
-  const { data: allStocks, loading, error } = useStocks<Stock>('/api/stocks');
+  const { data: allStocks, loading, error } = useFetch<Stock[]>('/api/stocks?index=BIST100', { initialData: [] });
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Client-side filter to only show BIST 100 symbols
-  const bist100Stocks = allStocks.filter((s) => BIST_100.includes(s.symbol));
-  const { filteredStocks } = useStockFilter(bist100Stocks, searchQuery);
+  const { filteredStocks } = useStockFilter(allStocks, searchQuery);
 
   return (
     <Container

@@ -19,7 +19,7 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material';
-import { useStocks } from '@/hooks/useStocks';
+import { useFetch } from '@/hooks/useFetch';
 import { useStockFilter } from '@/hooks/useStockFilter';
 
 const BACKGROUND_ORBS = [
@@ -36,7 +36,7 @@ const GRID_COLS = {
 };
 
 export default function Home() {
-  const { data: stocks, loading, error } = useStocks<Stock>('/api/stocks');
+  const { data: stocks, loading, error } = useFetch<Stock[]>('/api/stocks', { initialData: [] });
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSector, setSelectedSector] = useState('All');
   const { filteredStocks, sectors } = useStockFilter(stocks, searchQuery, selectedSector);
@@ -86,13 +86,15 @@ export default function Home() {
               placeholder="Hisse sembolü veya adı ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search color="#9ca3af" size={20} />
-                  </InputAdornment>
-                ),
-                sx: { bgcolor: 'background.paper', backdropFilter: 'blur(12px)' },
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search color="#9ca3af" size={20} />
+                    </InputAdornment>
+                  ),
+                  sx: { bgcolor: 'background.paper', backdropFilter: 'blur(12px)' },
+                },
               }}
             />
             <FormControl

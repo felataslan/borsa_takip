@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { Wallet, TrendingUp, TrendingDown, Trash2, Plus } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
-import { useStocks } from '@/hooks/useStocks';
+import { useFetch } from '@/hooks/useFetch';
 import { usePortfolioStore } from '@/store/usePortfolioStore';
 import { Stock } from '@/types/stock.types';
 import LoadingState from '@/components/LoadingState';
@@ -32,7 +32,7 @@ const BACKGROUND_ORBS = [
 ];
 
 export default function PortfolioPage() {
-  const { data: stocks, loading, error } = useStocks<Stock>('/api/stocks');
+  const { data: stocks, loading, error } = useFetch<Stock[]>('/api/stocks', { initialData: [] });
   const { items, addOrUpdateStock, removeStock } = usePortfolioStore();
 
   const [selectedStock, setSelectedStock] = useState<string | null>(null);
