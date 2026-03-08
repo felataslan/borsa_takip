@@ -10,6 +10,7 @@ import {
 import { Search } from 'lucide-react';
 import { Stock } from '@/types/stock.types';
 import StockCard from './StockCard';
+import StockDetailModal from './StockDetailModal';
 
 interface StockGridProps {
   stocks: Stock[];
@@ -33,6 +34,8 @@ export default function StockGrid({
   onSearchChange,
   placeholder = 'Hisse sembolü veya adı ara...',
 }: StockGridProps) {
+  const [selectedStock, setSelectedStock] = React.useState<Stock | null>(null);
+
   return (
     <>
       <Box sx={{ mb: 4, position: 'relative', zIndex: 10 }}>
@@ -85,10 +88,21 @@ export default function StockGrid({
           }}
         >
           {stocks.map((stock, idx) => (
-            <StockCard key={stock.symbol} stock={stock} index={idx} />
+            <StockCard 
+              key={stock.symbol} 
+              stock={stock} 
+              index={idx} 
+              onClick={(s) => setSelectedStock(s)} 
+            />
           ))}
         </Box>
       )}
+
+      <StockDetailModal 
+        open={!!selectedStock} 
+        onClose={() => setSelectedStock(null)} 
+        stock={selectedStock} 
+      />
     </>
   );
 }

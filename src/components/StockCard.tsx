@@ -8,15 +8,17 @@ import { Card, CardContent, Typography, IconButton, Box, Chip } from '@mui/mater
 interface StockCardProps {
   stock: Stock;
   index?: number;
+  onClick?: (stock: Stock) => void;
 }
 
-export default function StockCard({ stock, index = 0 }: StockCardProps) {
+export default function StockCard({ stock, index = 0, onClick }: StockCardProps) {
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const favorite = isFavorite(stock.symbol);
 
   const isPositive = stock.regularMarketChange >= 0;
 
   const toggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
     e.preventDefault();
     if (favorite) {
       removeFavorite(stock.symbol);
@@ -32,6 +34,7 @@ export default function StockCard({ stock, index = 0 }: StockCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
       whileHover={{ scale: 1.02 }}
+      onClick={() => onClick && onClick(stock)}
       sx={{
         position: 'relative',
         display: 'flex',
@@ -41,6 +44,7 @@ export default function StockCard({ stock, index = 0 }: StockCardProps) {
         bgcolor: 'background.paper', 
         border: '1px solid',
         borderColor: 'transparent',
+        cursor: onClick ? 'pointer' : 'default',
         backdropFilter: 'blur(12px)',
         transition: 'all 0.2s ease-in-out',
         '&:hover': {
