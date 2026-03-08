@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Cell } from 'recharts';
 import { IPOStock } from '@/types/stock.types';
 import { Rocket, TrendingUp, TrendingDown, Clock } from 'lucide-react';
@@ -11,6 +11,8 @@ import {
   Card,
   CardContent,
   Chip,
+  TextField,
+  InputAdornment,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import PageHeader from '@/components/PageHeader';
@@ -69,6 +71,16 @@ export default function IposPage() {
   const { data: rawData, loading, error } = useStocks<Record<string, unknown>>(
     '/api/stocks?index=HALKAARZ',
   );
+
+  const [userLots, setUserLots] = useState<Record<string, number>>({});
+
+  const handleLotChange = (symbol: string, value: string) => {
+    const parsed = parseInt(value, 10);
+    setUserLots(prev => ({
+      ...prev,
+      [symbol]: isNaN(parsed) || parsed < 0 ? 0 : parsed,
+    }));
+  };
 
   const ipoStocks: IPOStock[] = rawData.map(toIPOStock);
 
@@ -235,7 +247,56 @@ export default function IposPage() {
 
                     <Box
                       sx={{
-                        mt: 3,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        mb: 2,
+                        pt: 2,
+                        borderTop: '1px solid',
+                        borderColor: 'divider',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <TextField
+                        size="small"
+                        type="number"
+                        placeholder="0"
+                        label="Elimdeki Lot"
+                        value={userLots[stock.symbol] || ''}
+                        onChange={(e) => handleLotChange(stock.symbol, e.target.value)}
+                        variant="outlined"
+                        slotProps={{
+                          input: {
+                            endAdornment: <InputAdornment position="end">Lot</InputAdornment>,
+                            inputMode: 'numeric',
+                          }
+                        }}
+                        sx={{ width: '45%' }}
+                      />
+                      <Box sx={{ textAlign: 'right', width: '50%' }}>
+                        <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
+                          ₺ Kâr/Zarar
+                        </Typography>
+                        {userLots[stock.symbol] > 0 ? (
+                          <Typography
+                            variant="body1"
+                            sx={{ color: isPos ? '#4ade80' : '#f87171', fontWeight: 'bold' }}
+                          >
+                            {isPos ? '+' : ''}
+                            {(
+                              (stock.regularMarketPrice - stock.ipoPrice) * userLots[stock.symbol]
+                            ).toLocaleString('tr-TR', { maximumFractionDigits: 2 })} ₺
+                          </Typography>
+                        ) : (
+                          <Typography variant="body1" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                            -
+                          </Typography>
+                        )}
+                      </Box>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        mt: 1,
                         pt: 2,
                         borderTop: '1px solid',
                         borderColor: 'divider',
@@ -245,7 +306,7 @@ export default function IposPage() {
                       }}
                     >
                       <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        Toplam Getiri:
+                        Yüzdesel Getiri:
                       </Typography>
                       <Chip
                         icon={isPos ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
