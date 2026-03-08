@@ -12,7 +12,8 @@
   - `npm run build` ve `npm run lint` sıfır hata ile geçiyor.
 
 - **Halka Arzlar Sayfası (`/halkaarz`):** `halkarz.com` scraping ile son 3 aya ait IPO hisselerinin halka arz fiyatına göre toplam getirisi gösterilmekte; Recharts `BarChart` ile görselleştirilmektedir.
-- **Dark/Light Mode:** `ThemeProvider` localStorage üzerinden temayı hatırlar ve sistem tercihine göre varsayılan belirler.
+- **Responsive Navigasyon:** `Header.tsx` bileşenine mobil cihazlar için Material UI `Drawer` (Hamburger Menü) eklendi; desktop menüsü CSS breakpointleri ile gizleniyor/gösteriliyor.
+- **Dark/Light Mode:** `ThemeProvider` localStorage üzerinden temayı hatırlar ve sistem tercihine göre varsayılan belirler. "Cascading renders" uyarısını düzeltecek şekilde `useEffect` akışı iyileştirildi.
 
 ## Gelecek Planı veya Olası Eklemeler
 

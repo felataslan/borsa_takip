@@ -11,8 +11,10 @@
 - [x] Ana sayfada hisse adı/sembolü araması + sektör dropdown filtresi
 - [x] BİST 30 ve BİST 100 sayfaları (`/bist30`, `/bist100`)
 - [x] Halka Arzlar sayfası (`/halkaarz`): IPO listesi scraping + Recharts bar grafiği
-- [x] **Tam refactör:** Paylaşımlı hook'lar (`useStocks`, `useStockFilter`) ve UI bileşenleri (`PageHeader`, `LoadingState`, `ErrorState`, `StockGrid`, `BackgroundOrbs`, `IpoTooltip`) oluşturuldu; tüm sayfalardaki kod tekrarı giderildi
+- **Tam refactör:** Paylaşımlı hook'lar (`useStocks`, `useStockFilter`) ve UI bileşenleri (`PageHeader`, `LoadingState`, `ErrorState`, `StockGrid`, `BackgroundOrbs`, `IpoTooltip`) oluşturuldu; tüm sayfalardaki kod tekrarı giderildi
 - [x] `Stock` ve `IPOStock` TypeScript tip sistemi genişletildi
+- [x] `Header.tsx` için Responsive Sidebar (Drawer / Hamburger Menu) eklendi ve TypeScript Link `style`/`sx` hata çakışmaları çözüldü
+- [x] `ThemeProvider` cascading renders Effect problemi giderildi
 - [x] `npm run build` ve `npm run lint` sıfır hata ile geçmekte
 
 ## Bekleyen/İlerleyen Aşamalar (Backlog):
