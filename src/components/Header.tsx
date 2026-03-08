@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AppBar, Toolbar, Typography, Button, Box, Container, IconButton, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider } from '@mui/material';
-import { Activity, Star, TrendingUp, Map, Rocket, Sun, Moon, Menu, X } from 'lucide-react';
+import { Activity, Star, TrendingUp, Map, Rocket, Sun, Moon, Menu, X, Wallet } from 'lucide-react';
 import { useAppTheme } from '@/theme/ThemeProvider';
 
 export default function Header() {
@@ -18,6 +18,7 @@ export default function Header() {
     { label: 'BİST 100', href: '/bist100', icon: <Map size={20} /> },
     { label: 'Halka Arzlar', href: '/halkaarz', icon: <Rocket size={20} /> },
     { label: 'Favoriler', href: '/favorites', icon: <Star size={20} /> },
+    { label: 'Hesabım', href: '/hesabim', icon: <Wallet size={20} /> },
   ];
 
   return (
@@ -120,6 +121,21 @@ export default function Header() {
               }}
             >
               Favoriler
+            </Button>
+
+            <Button
+              component={Link}
+              href="/hesabim"
+              startIcon={<Wallet size={16} />}
+              sx={{
+                color: pathname === '/hesabim' ? 'text.primary' : 'text.secondary',
+                fontWeight: 500,
+                textTransform: 'none',
+                display: { xs: 'none', sm: 'flex' },
+                '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
+              }}
+            >
+              Hesabım
             </Button>
 
             {/* Theme Toggle Button */}

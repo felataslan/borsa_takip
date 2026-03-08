@@ -29,10 +29,11 @@ Sayfa yüklenir
 
 ## Hook Mimarisi (Paylaşımlı Mantık)
 
-| Hook             | Dosya                         | Amaç                                                                  |
-| ---------------- | ----------------------------- | --------------------------------------------------------------------- |
-| `useStocks<T>`   | `src/hooks/useStocks.ts`      | Generic fetch + auto-refresh + loading/error state                    |
-| `useStockFilter` | `src/hooks/useStockFilter.ts` | Memoized arama + sektör filtresi; döner `filteredStocks` ve `sectors` |
+| Hook             | Dosya                         | Amaç                                                                   |
+| ---------------- | ----------------------------- | ---------------------------------------------------------------------- |
+| `useStocks<T>`   | `src/hooks/useStocks.ts`      | Generic fetch + auto-refresh + loading/error state                     |
+| `useStockFilter` | `src/hooks/useStockFilter.ts` | Memoized arama + sektör filtresi; döner `filteredStocks` ve `sectors`  |
+| `useMounted`     | `src/hooks/useMounted.ts`     | Next.js SSR hydration sorunlarını çözmek için (client'te mount bekler) |
 
 ---
 
@@ -53,7 +54,8 @@ Sayfa yüklenir
 
 ## Durum Yönetimi
 
-- **Global / Kalıcı:** `useFavoritesStore` (Zustand + `persist` → `localStorage`)
+- **Global / Kalıcı:** `useFavoritesStore` (Zustand + `persist` → `localStorage`) ile favori hisseler
+- **Portföy / Yatırım:** `usePortfolioStore` (Zustand + `persist` → `localStorage`) ile lot/maliyet takibi
 - **Sunucu Cache:** `getDynamicIPOs()` içinde 12 saatlik bellek cache (module-level değişken)
 - **Lokal:** `useState` (searchQuery, selectedSector, loading, data vb.)
 
@@ -61,7 +63,7 @@ Sayfa yüklenir
 
 ## Stil ve Tasarım Sistemi
 
-- **Material UI (MUI)** ana bileşen kütüphanesi; `src/theme/theme.ts` içinde `PaletteMode` bazlı `ThemeOptions` tanımı.
+- **Material UI (MUI)** ana bileşen kütüphanesi; `src/theme/theme.ts` içinde `PaletteMode` bazlı `ThemeOptions` tanımı. Klasik `item` yapısı yerine MUI v6 Grid `size` objesi kullanılmaktadır.
 - **Tailwind CSS** sınıfları layout için hâlâ `layout.tsx`'te kullanılmaktadır (`min-h-screen`, `antialiased` vb.).
 - **Framer Motion**: `StockCard` ve `halkaarz` kart animasyonları için MUI `Card` ile birlikte `component={motion.div}` olarak kullanılır.
 - **Lucide React**: Tüm ikonlar için tek kaynak.

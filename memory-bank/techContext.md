@@ -27,6 +27,7 @@ src/
 │   ├── bist30/         → BİST 30 sayfası
 │   ├── bist100/        → BİST 100 sayfası
 │   ├── favorites/      → Favoriler sayfası
+│   ├── hesabim/        → Portföy ve yatırım takibi (Kâr/Zarar) sayfası
 │   ├── halkaarz/       → Halka Arzlar sayfası (IPO + Recharts)
 │   ├── layout.tsx      → Root layout (Header, ThemeProvider)
 │   └── page.tsx        → Ana sayfa (sektörel gruplama)
@@ -41,9 +42,11 @@ src/
 │   └── IpoTooltip.tsx       → Recharts tooltip (paylaşımlı)
 ├── hooks/
 │   ├── useStocks.ts         → Generic fetch + auto-refresh hook
-│   └── useStockFilter.ts    → Memoized filtre hook'u
+│   ├── useStockFilter.ts    → Memoized filtre hook'u
+│   └── useMounted.ts        → SSR hydration önleyici hook
 ├── store/
-│   └── useFavoritesStore.ts → Zustand favoriler store
+│   ├── useFavoritesStore.ts → Zustand favoriler store
+│   └── usePortfolioStore.ts → Zustand portföy/yatırım store'u
 ├── types/
 │   └── stock.types.ts       → Stock, IPOStock arayüzleri
 ├── theme/

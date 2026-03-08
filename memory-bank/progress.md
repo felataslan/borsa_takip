@@ -12,6 +12,10 @@
 - [x] BİST 30 ve BİST 100 sayfaları (`/bist30`, `/bist100`)
 - [x] Halka Arzlar sayfası (`/halkaarz`): IPO listesi scraping + Recharts bar grafiği
 - [x] Halka Arzlar sayfasına "Elimdeki Lot" TextField girişi ve anlık fiyata göre ₺ bazında dinamik kâr/zarar hesaplama özelliği eklendi
+- [x] Kullanıcının kendi hisselerini ve maliyetlerini ekleyebildiği Portföy (Hesabım) sayfası oluşturuldu
+- [x] Portföy sayfasında virgüllü sayı girişi (12,50) ve sıfır maliyetli hisse (bedelsiz) desteği eklendi
+- [x] Next.js hydration uyarılarını çözen istemci-taraflı `useMounted` hook'u oluşturuldu ve uygulandı
+- [x] Eski MUI Grid `item` propları yeni nesil `size` propları ile güncellendi
 - **Tam refactör:** Paylaşımlı hook'lar (`useStocks`, `useStockFilter`) ve UI bileşenleri (`PageHeader`, `LoadingState`, `ErrorState`, `StockGrid`, `BackgroundOrbs`, `IpoTooltip`) oluşturuldu; tüm sayfalardaki kod tekrarı giderildi
 - [x] `Stock` ve `IPOStock` TypeScript tip sistemi genişletildi
 - [x] `Header.tsx` için Responsive Sidebar (Drawer / Hamburger Menu) eklendi ve TypeScript Link `style`/`sx` hata çakışmaları çözüldü

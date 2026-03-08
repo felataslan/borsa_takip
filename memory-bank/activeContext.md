@@ -12,7 +12,9 @@
   - `npm run build` ve `npm run lint` sıfır hata ile geçiyor.
 
 - **Halka Arzlar Sayfası (`/halkaarz`):** `halkarz.com` scraping ile son 3 aya ait IPO hisselerinin halka arz fiyatına göre toplam getirisi gösterilmektedir. Ayrıca, kullanıcıların girdikleri **"Elimdeki Lot" değerine göre hisse bazlı net ₺ kâr/zarar** dinamik olarak hesaplanmaktadır.
+- **Portföy (Hesabım) Sayfası (`/hesabim`):** Kullanıcının varlıklarını (lot, maliyet) ekleyip anlık fiyatlar üzerinden kâr/zarar durumunu ve portföy dağılımını takip edebileceği yeni bir sayfa eklendi. Sıfır maliyetli (bedelsiz) hisse girişi ve virgüllü ondalık sayı formatları desteklenmektedir.
 - **Responsive Navigasyon:** `Header.tsx` bileşenine mobil cihazlar için Material UI `Drawer` (Hamburger Menü) eklendi; desktop menüsü CSS breakpointleri ile gizleniyor/gösteriliyor.
+- **Hydration & UI Düzeltmeleri:** MUI v6 Grid `size` prop'u kullanımına geçildi. Ayrıca Next.js SSR ile Zustand localStorage arasındaki hydration hatalarını önlemek için `useMounted` hook'u yazılarak entegre edildi.
 - **Dark/Light Mode:** `ThemeProvider` localStorage üzerinden temayı hatırlar ve sistem tercihine göre varsayılan belirler. "Cascading renders" uyarısını düzeltecek şekilde `useEffect` akışı iyileştirildi.
 
 ## Gelecek Planı veya Olası Eklemeler
