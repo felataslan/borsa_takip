@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AppBar, Toolbar, Typography, Button, Box, Container, IconButton, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider } from '@mui/material';
-import { Activity, Star, TrendingUp, Map, Rocket, Sun, Moon, Menu, X, Wallet } from 'lucide-react';
+import { Activity, TrendingUp, Map, Rocket, Sun, Moon, Menu, X, Wallet } from 'lucide-react';
 import { useAppTheme } from '@/theme/ThemeProvider';
 
 export default function Header() {
@@ -17,7 +17,6 @@ export default function Header() {
     { label: 'BİST 30', href: '/bist30', icon: <TrendingUp size={20} /> },
     { label: 'BİST 100', href: '/bist100', icon: <Map size={20} /> },
     { label: 'Halka Arzlar', href: '/halkaarz', icon: <Rocket size={20} /> },
-    { label: 'Favoriler', href: '/favorites', icon: <Star size={20} /> },
     { label: 'Hesabım', href: '/hesabim', icon: <Wallet size={20} /> },
   ];
 
