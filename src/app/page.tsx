@@ -9,6 +9,8 @@ import PageHeader from '@/components/PageHeader';
 import LoadingState from '@/components/LoadingState';
 import ErrorState from '@/components/ErrorState';
 import BackgroundOrbs from '@/components/BackgroundOrbs';
+import TopGainersList from '@/components/TopGainersList';
+import DailyTopGainers from '@/components/DailyTopGainers';
 import { Activity, Search, Star } from 'lucide-react';
 import {
   Box,
@@ -84,7 +86,7 @@ export default function Home() {
             '& .Mui-selected': { fontWeight: 700 },
           }}
         >
-          <Tab label="Sektörler" id="tab-sectors" aria-controls="tabpanel-sectors" />
+          <Tab label="Hisseler" id="tab-sectors" aria-controls="tabpanel-sectors" />
           <Tab
             label={
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -121,7 +123,7 @@ export default function Home() {
         <ErrorState message={error} />
       ) : (
         <>
-          {/* ─── SEKTÖRLER TAB ─── */}
+          {/* ─── HİSSELER TAB ─── */}
           <Box
             role="tabpanel"
             id="tabpanel-sectors"
@@ -130,6 +132,15 @@ export default function Home() {
           >
             {activeTab === 0 && (
               <>
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 3, mb: 4 }}>
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <TopGainersList />
+                  </Box>
+                  <Box sx={{ width: { xs: '100%', lg: 350 }, flexShrink: 0 }}>
+                    <DailyTopGainers stocks={stocks} />
+                  </Box>
+                </Box>
+
                 {/* Search + Sector Filter row */}
                 <Box
                   sx={{

@@ -22,3 +22,13 @@ export interface IPOStock extends Required<Pick<Stock, 'ipoPrice' | 'ipoDate' | 
   currency: string;
   totalReturnPercent: number;
 }
+
+/** En Çok Yükselenler API'si için özel tip */
+export interface TopGainerStock {
+  symbol: string;
+  shortName: string;
+  currentPrice: number;
+  gainPercent: number;
+  periodStartPrice: number;
+  period: '3m' | '6m' | '1y' | '5y';
+}
