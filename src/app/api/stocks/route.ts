@@ -3,13 +3,25 @@ import YahooFinance from 'yahoo-finance2';
 import { BIST_SECTORS, getAllBistSymbols } from '@/data/bist-sectors';
 import { BIST_100 } from '@/data/bist-indexes';
 import { getDynamicIPOs, IPOData } from '@/utils/ipo-scraper';
+import NodeCache from 'node-cache';
+
+// Initialize a cache instance 
+// stdTTL: 120 seconds (2 mins) caching to match the general 15min delay from Yahoo Finance but avoid rate limits on concurrent page reloads
+const cache = new NodeCache({ stdTTL: 120, checkperiod: 150 });
 
 const yahooFinance = new YahooFinance({ suppressNotices: ['yahooSurvey'] });
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const index = searchParams.get('index');
+    const index = searchParams.get('index') || 'ALL';
+
+    // 1. Check if we have a cached response for this specific index query
+    const cacheKey = `stocks_${index}`;
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      return NextResponse.json(cachedData);
+    }
 
     let allSymbols: string[] = [];
     let dynamicIPOs: IPOData[] = [];
@@ -61,6 +73,9 @@ export async function GET(request: Request) {
       }
       return baseObj;
     });
+
+    // 2. Save the result to cache before responding
+    cache.set(cacheKey, stocks);
 
     return NextResponse.json(stocks);
   } catch (error) {

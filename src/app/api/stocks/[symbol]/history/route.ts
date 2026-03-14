@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 import YahooFinance from 'yahoo-finance2';
+import NodeCache from 'node-cache';
+
+// Cache historical data for 5 minutes (300 TTL) to avoid hitting Yahoo Finance repeatedly for the same charts
+const cache = new NodeCache({ stdTTL: 300, checkperiod: 320 });
 
 const yahooFinance = new YahooFinance({ suppressNotices: ['yahooSurvey'] });
 
@@ -14,6 +18,12 @@ export async function GET(
 
     if (!symbol) {
       return NextResponse.json({ error: 'Symbol is required' }, { status: 400 });
+    }
+
+    const cacheKey = `history_${symbol}_${period}`;
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      return NextResponse.json(cachedData);
     }
 
     if (period === '1d') {
@@ -37,6 +47,8 @@ export async function GET(
           low: item.low,
           volume: item.volume,
         }));
+      
+      cache.set(cacheKey, formattedData);
       return NextResponse.json(formattedData);
     }
 
@@ -82,6 +94,7 @@ export async function GET(
       volume: item.volume,
     }));
 
+    cache.set(cacheKey, formattedData);
     return NextResponse.json(formattedData);
   } catch (error) {
     console.error(`Error fetching historical data for symbol:`, error);
