@@ -43,14 +43,23 @@ export async function getDynamicIPOs(): Promise<IPOData[]> {
     const validLinkFilter = (l: string) => l.startsWith('https://halkarz.com/') && l.endsWith('-a-s/');
     const uniqueLinks = [...new Set(allLinks.filter(validLinkFilter))].slice(0, 15);
     
-    // Now fetch details for each link concurrently
-    const ipoDetailsPromises = uniqueLinks.map(async (url) => {
+    // Fetch details sequentially with a delay to avoid rate limiting
+    const DELAY_MS = 500; // 500ms between requests
+    const FETCH_TIMEOUT_MS = 10000; // 10 second timeout per request
+
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+    const fetchDetail = async (url: string): Promise<IPOData | null> => {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
         const detailRes = await fetch(url, {
-          headers: {
-            'User-Agent': 'Mozilla/5.0'
-          }
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+          signal: controller.signal,
         });
+        clearTimeout(timeoutId);
+
         if (!detailRes.ok) return null;
         const detailHtml = await detailRes.text();
         const _$ = cheerio.load(detailHtml);
@@ -81,22 +90,25 @@ export async function getDynamicIPOs(): Promise<IPOData[]> {
            }
         });
 
-        // If no symbol or price found, it might not be a valid completed IPO
         if (!symbol || !price) return null;
 
-        return {
-          symbol,
-          ipoPrice: price,
-          ipoDate: date,
-          name
-        };
+        return { symbol, ipoPrice: price, ipoDate: date, name };
       } catch (err) {
-        console.error("Error fetching detail:", url, err);
+        console.error('Error fetching detail:', url, err);
         return null;
       }
-    });
+    };
 
-    const results = await Promise.all(ipoDetailsPromises);
+    const results: (IPOData | null)[] = [];
+    for (const url of uniqueLinks) {
+      const result = await fetchDetail(url);
+      results.push(result);
+      // Add delay between requests to be polite to the server
+      if (uniqueLinks.indexOf(url) < uniqueLinks.length - 1) {
+        await delay(DELAY_MS);
+      }
+    }
+
     const validIPOs = results.filter((ipo): ipo is IPOData => ipo !== null);
 
     if (validIPOs.length > 0) {

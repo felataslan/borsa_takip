@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import useSWR, { SWRConfiguration } from 'swr';
 
 interface UseFetchOptions<T> {
   initialData: T;
@@ -13,58 +13,46 @@ interface UseFetchResult<T> {
   loading: boolean;
   error: string | null;
   refresh: () => Promise<void>;
-  setData: React.Dispatch<React.SetStateAction<T>>;
 }
 
+const fetcher = async (url: string) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Veriler çekilirken bir hata oluştu');
+  }
+  return response.json();
+};
+
 /** 
- * Generic data-fetching hook with auto-refresh and cleanup. 
- * Can be used for any endpoint that returns JSON.
+ * Generic data-fetching hook powered by SWR.
+ * Provides automatic revalidation on window focus, interval-based refresh,
+ * and deduplication of concurrent requests for the same key.
  */
 export function useFetch<T>(
   url: string,
   options: UseFetchOptions<T>
 ): UseFetchResult<T> {
   const { initialData, refreshIntervalMs, autoFetch = true } = options;
-  const [data, setData] = useState<T>(initialData);
-  // If autoFetch is false, we shouldn't start in a loading state. Default to true.
-  const [loading, setLoading] = useState(autoFetch);
-  const [error, setError] = useState<string | null>(null);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Veriler çekilirken bir hata oluştu');
-      }
-      const json = await response.json();
-      setData(json);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Bilinmeyen bir hata oluştu');
-    } finally {
-      setLoading(false);
-    }
-  }, [url]);
+  const swrConfig: SWRConfiguration = {
+    fallbackData: initialData,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+    dedupingInterval: 5000, // Deduplicate requests within 5 seconds
+    ...(refreshIntervalMs && refreshIntervalMs > 0 ? { refreshInterval: refreshIntervalMs } : {}),
+  };
 
-  useEffect(() => {
-    const initialFetch = async () => {
-       await fetchData();
-    };
+  // If autoFetch is false, pass null as key to disable fetching
+  const { data, error, isLoading, mutate } = useSWR<T>(
+    autoFetch ? url : null,
+    fetcher,
+    swrConfig,
+  );
 
-    if (autoFetch) {
-      initialFetch();
-    }
-    
-    let interval: NodeJS.Timeout;
-    if (refreshIntervalMs && refreshIntervalMs > 0) {
-      interval = setInterval(fetchData, refreshIntervalMs);
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    }
-  }, [fetchData, refreshIntervalMs, autoFetch]);
-
-  return { data, loading, error, refresh: fetchData, setData };
+  return {
+    data: data ?? initialData,
+    loading: isLoading,
+    error: error ? (error instanceof Error ? error.message : 'Bilinmeyen bir hata oluştu') : null,
+    refresh: async () => { await mutate(); },
+  };
 }

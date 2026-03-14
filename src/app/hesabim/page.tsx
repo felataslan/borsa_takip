@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   Box,
   Container,
@@ -8,15 +8,12 @@ import {
   Card,
   CardContent,
   Grid,
-  TextField,
-  Autocomplete,
-  Button,
-  IconButton,
-  Divider,
   Chip,
 } from '@mui/material';
-import { Wallet, TrendingUp, TrendingDown, Trash2, Plus } from 'lucide-react';
+import { Wallet, TrendingUp, TrendingDown } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
+import AddPortfolioForm from '@/components/AddPortfolioForm';
+import PortfolioItemCard from '@/components/PortfolioItemCard';
 import { useFetch } from '@/hooks/useFetch';
 import { usePortfolioStore } from '@/store/usePortfolioStore';
 import { Stock } from '@/types/stock.types';
@@ -34,10 +31,6 @@ const BACKGROUND_ORBS = [
 export default function PortfolioPage() {
   const { data: stocks, loading, error } = useFetch<Stock[]>('/api/stocks', { initialData: [] });
   const { items, addOrUpdateStock, removeStock } = usePortfolioStore();
-
-  const [selectedStock, setSelectedStock] = useState<string | null>(null);
-  const [inputLots, setInputLots] = useState<string>('');
-  const [inputCost, setInputCost] = useState<string>('');
   const isMounted = useMounted();
 
   // Map portfolio items to fresh live data
@@ -69,17 +62,6 @@ export default function PortfolioPage() {
   const currentTotalValue = portfolioData.reduce((sum, item) => sum + item.totalValue, 0);
   const totalProfitLoss = currentTotalValue - totalInvestment;
   const totalProfitLossPercentage = totalInvestment > 0 ? (totalProfitLoss / totalInvestment) * 100 : 0;
-
-  const handleAddStock = () => {
-    if (selectedStock && inputLots) {
-      const parsedCost = inputCost !== '' ? Number(inputCost.replace(',', '.')) : undefined;
-      
-      addOrUpdateStock(selectedStock, Number(inputLots), parsedCost);
-      setSelectedStock(null);
-      setInputLots('');
-      setInputCost('');
-    }
-  };
 
   return (
     <Container maxWidth="lg" sx={{ py: 4, minHeight: '100vh', position: 'relative', overflowX: 'clip' }}>
@@ -154,55 +136,8 @@ export default function PortfolioPage() {
             </Grid>
           </Grid>
 
-          {/* Add Stock Section */}
-          <Card sx={{ mb: 6, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 4, position: 'relative', zIndex: 10 }}>
-            <CardContent sx={{ p: 4 }}>
-              <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold' }}>Portföye Hisse Ekle</Typography>
-              <Grid container spacing={2} alignItems="center">
-                <Grid size={{ xs: 12, md: 5 }}>
-                  <Autocomplete
-                    options={stocks.map(s => s.symbol)}
-                    value={selectedStock}
-                    onChange={(_, newValue) => setSelectedStock(newValue)}
-                    renderInput={(params) => <TextField {...params} label="Hisse Seç (Örn: THYAO.IS)" variant="outlined" />}
-                  />
-                </Grid>
-                <Grid size={{ xs: 6, md: 2 }}>
-                  <TextField 
-                    fullWidth 
-                    label="Lot Adeti" 
-                    type="number" 
-                    value={inputLots} 
-                    onChange={(e) => setInputLots(e.target.value)} 
-                    inputProps={{ min: 1 }}
-                  />
-                </Grid>
-                <Grid size={{ xs: 6, md: 3 }}>
-                  <TextField 
-                    fullWidth 
-                    label="Maliyet Fiyatı (₺)" 
-                    type="number" 
-                    value={inputCost} 
-                    onChange={(e) => setInputCost(e.target.value)} 
-                    inputProps={{ min: 0, step: "0.01" }}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, md: 2 }}>
-                  <Button 
-                    fullWidth 
-                    variant="contained" 
-                    size="large"
-                    disabled={!selectedStock || !inputLots}
-                    onClick={handleAddStock}
-                    startIcon={<Plus size={20} />}
-                    sx={{ height: 56, borderRadius: 2, textTransform: 'none', fontWeight: 'bold' }}
-                  >
-                    Ekle
-                  </Button>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
+          {/* Add Stock Form */}
+          <AddPortfolioForm stocks={stocks} onAdd={addOrUpdateStock} />
 
           {/* Portfolio List */}
           <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold', position: 'relative', zIndex: 10 }}>Portföyümdeki Hisseler</Typography>
@@ -215,63 +150,7 @@ export default function PortfolioPage() {
             <Grid container spacing={3} sx={{ position: 'relative', zIndex: 10 }}>
               {portfolioData.map((item) => (
                 <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.symbol}>
-                  <Card sx={{  
-                    bgcolor: 'background.paper', 
-                    borderRadius: 3, 
-                    border: '1px solid', 
-                    borderColor: 'divider',
-                    transition: 'transform 0.2s',
-                    '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.1)' }
-                  }}>
-                    <CardContent>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                        <Box>
-                          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{item.symbol.replace('.IS', '')}</Typography>
-                          <Typography variant="body2" color="text.secondary">{item.liveStock?.shortName || 'Yükleniyor...'}</Typography>
-                        </Box>
-                        <IconButton 
-                          size="small" 
-                          onClick={() => removeStock(item.symbol)}
-                          sx={{ color: 'text.secondary', '&:hover': { color: '#f43f5e', bgcolor: 'rgba(244, 63, 94, 0.1)' } }}
-                        >
-                          <Trash2 size={18} />
-                        </IconButton>
-                      </Box>
-                      
-                      <Divider sx={{ my: 1.5 }} />
-
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                        <Typography variant="body2" color="text.secondary">Adet (Lot)</Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>{item.lots}</Typography>
-                      </Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                        <Typography variant="body2" color="text.secondary">Maliyet Fiyatı</Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>{item.averageCost?.toFixed(2) || '0.00'} ₺</Typography>
-                      </Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                        <Typography variant="body2" color="text.secondary">Anlık Fiyat</Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>{item.currentPrice.toFixed(2)} ₺</Typography>
-                      </Box>
-                      
-                      <Divider sx={{ my: 1.5 }} />
-
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                         <Box>
-                            <Typography variant="caption" color="text.secondary" display="block">Toplam Değer</Typography>
-                            <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{item.totalValue.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} ₺</Typography>
-                         </Box>
-                         <Box sx={{ textAlign: 'right' }}>
-                            <Typography variant="caption" color="text.secondary" display="block">Kâr/Zarar</Typography>
-                            <Typography variant="body1" sx={{ 
-                              fontWeight: 'bold', 
-                              color: item.profitLoss >= 0 ? '#10b981' : '#f43f5e' 
-                            }}>
-                              {item.profitLoss > 0 ? '+' : ''}{item.profitLoss.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} ₺
-                            </Typography>
-                         </Box>
-                      </Box>
-                    </CardContent>
-                  </Card>
+                  <PortfolioItemCard item={item} onRemove={removeStock} />
                 </Grid>
               ))}
             </Grid>
