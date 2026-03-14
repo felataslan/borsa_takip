@@ -56,16 +56,17 @@ Sayfa yüklenir
 
 - **Global / Kalıcı:** `useFavoritesStore` (Zustand + `persist` → `localStorage`) ile favori hisseler
 - **Portföy / Yatırım:** `usePortfolioStore` (Zustand + `persist` → `localStorage`) ile lot/maliyet takibi
-- **Sunucu Cache:** `getDynamicIPOs()` içinde 12 saatlik bellek cache (module-level değişken)
+- **Sunucu Cache (Rate Limit Koruması):** `node-cache` kullanılarak `/api/stocks` (120 sn) ve `/api/stocks/[symbol]/history` (300 sn) rote'larında server-side caching.
+- **Scraper Cache:** `getDynamicIPOs()` içinde 12 saatlik bellek cache (module-level değişken)
 - **Lokal:** `useState` (searchQuery, selectedSector, loading, data vb.)
 
 ---
 
 ## Stil ve Tasarım Sistemi
 
-- **Material UI (MUI)** ana bileşen kütüphanesi; `src/theme/theme.ts` içinde `PaletteMode` bazlı `ThemeOptions` tanımı. Klasik `item` yapısı yerine MUI v6 Grid `size` objesi kullanılmaktadır.
-- **Tailwind CSS** sınıfları layout için hâlâ `layout.tsx`'te kullanılmaktadır (`min-h-screen`, `antialiased` vb.).
-- **Framer Motion**: `StockCard` ve `halkaarz` kart animasyonları için MUI `Card` ile birlikte `component={motion.div}` olarak kullanılır.
+- **Material UI (MUI)** ve **Tailwind CSS**: MUI ana bileşen motoru iken (`theme.ts` üzerinden), global layout işlemleri Tailwind sınıfları ile yapılmaktadır. Uygulama güncel fintech tarzı **Premium Glassmorphism** tasarım dilini kullanır (`backdrop-filter: blur`, 20px~24px border radius, saydam opak kenarlıklar).
+- **Renk Paleti**: Özellikle Dark Mode için çok koyu arduvaz (`#09090b`) arkaplanlar ve canlı zümrüt yeşili (`#10b981`) kontrast renkleri vurgulanmıştır.
+- **Framer Motion**: `StockCard` hover animasyonlarında (yukarı kalkma, derinleşen gölge ve arka plan ışılması) ve liste giriş efekti işlemlerinde MUI `Card` bileşeniyle entegre kullanılmıştır.
 - **Lucide React**: Tüm ikonlar için tek kaynak.
 
 ---

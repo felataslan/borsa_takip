@@ -20,8 +20,10 @@
 - [x] `Stock` ve `IPOStock` TypeScript tip sistemi genişletildi
 - [x] `Header.tsx` için Responsive Sidebar (Drawer / Hamburger Menu) eklendi ve TypeScript Link `style`/`sx` hata çakışmaları çözüldü
 - [x] `ThemeProvider` cascading renders Effect problemi giderildi
+- [x] Security: Bağımlılık zafiyetleri (`npm audit fix`) giderildi
+- [x] Performans & API Rate Limit Koruması: `node-cache` entegrasyonu ile API endpoint'lerinde sunucu taraflı önbellekleme uygulandı
+- [x] UI Modernizasyonu: Uygulama tasarımı Premium uçtan uca "Glassmorphism" efekti, zümrüt yeşili palet ve gelişmiş `framer-motion` animasyonları ile modernleştirildi
 - [x] `npm run build` ve `npm run lint` sıfır hata ile geçmekte
-
 ## Bekleyen/İlerleyen Aşamalar (Backlog):
 
 - [ ] Hisse detay sayfası (tıklama ile geçmiş fiyat grafiği veya bilanço bilgisi)

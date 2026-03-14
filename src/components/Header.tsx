@@ -38,33 +38,58 @@ export default function Header() {
 
           {/* Logo Section */}
           <Link href="/" passHref style={{ textDecoration: 'none' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.primary', flexGrow: { xs: 1, sm: 0 } }}>
-              <Activity color="#22c55e" size={24} />
-              <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', letterSpacing: '-0.025em' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: 'text.primary', flexGrow: { xs: 1, sm: 0 }, position: 'relative' }}>
+              <Box 
+                sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  p: 0.8,
+                  borderRadius: 2,
+                  bgcolor: 'primary.main',
+                  color: 'primary.contrastText',
+                  boxShadow: `0 0 20px -2px ${mode === 'dark' ? '#10b981' : 'transparent'}`,
+                }}
+              >
+                <Activity size={22} strokeWidth={2.5} />
+              </Box>
+              <Typography variant="h6" component="div" sx={{ fontWeight: 800, letterSpacing: '-0.04em', fontSize: '1.3rem' }}>
                 Borsa<Box component="span" sx={{ color: 'primary.main' }}>Takip</Box>
               </Typography>
             </Box>
           </Link>
 
           {/* Desktop Navigation Section */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 2 } }}>
-            {navItems.map((item) => (
-              <Button
-                key={item.href}
-                component={Link}
-                href={item.href}
-                startIcon={<Box component="span" sx={{ display: 'flex' }}>{item.icon}</Box>}
-                sx={{
-                  color: pathname === item.href ? 'text.primary' : 'text.secondary',
-                  fontWeight: 500,
-                  textTransform: 'none',
-                  display: { xs: 'none', sm: 'flex' },
-                  '&:hover': { color: 'text.primary', backgroundColor: 'transparent' },
-                }}
-              >
-                {item.label}
-              </Button>
-            ))}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 1.5 } }}>
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Button
+                  key={item.href}
+                  component={Link}
+                  href={item.href}
+                  startIcon={<Box component="span" sx={{ display: 'flex' }}>{item.icon}</Box>}
+                  sx={{
+                    color: isActive ? 'text.primary' : 'text.secondary',
+                    fontWeight: isActive ? 600 : 500,
+                    textTransform: 'none',
+                    display: { xs: 'none', sm: 'flex' },
+                    px: 2,
+                    py: 0.75,
+                    borderRadius: '100px', // Pill shape
+                    bgcolor: isActive ? (mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)') : 'transparent',
+                    '&:hover': { 
+                      color: 'text.primary', 
+                      bgcolor: isActive 
+                        ? (mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)') 
+                        : (mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)')
+                    },
+                  }}
+                >
+                  {item.label}
+                </Button>
+              )
+            })}
 
             {/* Theme Toggle Button */}
             <IconButton

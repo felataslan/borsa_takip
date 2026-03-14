@@ -35,8 +35,10 @@ export default function TopGainersList() {
     <Box
       sx={{
         p: { xs: 2, sm: 3 },
-        borderRadius: 4,
-        background: 'linear-gradient(145deg, rgba(34, 197, 94, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%)',
+        borderRadius: 5,
+        background: (theme) => theme.palette.mode === 'dark' 
+          ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%)'
+          : 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%)',
         border: '1px solid',
         borderColor: 'divider',
         position: 'relative',
@@ -49,15 +51,16 @@ export default function TopGainersList() {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
         <Box
           sx={{
-            p: 1,
-            borderRadius: 2,
-            bgcolor: 'rgba(34, 197, 94, 0.1)',
+            p: 1.25,
+            borderRadius: 3,
+            bgcolor: 'rgba(16, 185, 129, 0.15)',
+            color: '#10b981',
             display: 'flex',
           }}
         >
-          <TrendingUp color="#22c55e" size={24} />
+          <TrendingUp size={22} strokeWidth={2.5} />
         </Box>
-        <Typography variant="h6" sx={{ fontWeight: 700, color: 'text.primary' }}>
+        <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', letterSpacing: '-0.02em' }}>
           En Çok Yükselenler (BİST 100)
         </Typography>
       </Box>
@@ -116,29 +119,29 @@ export default function TopGainersList() {
               sx={{
                 flex: '0 0 auto',
                 width: { xs: 160, sm: 180 },
-                p: 2,
-                borderRadius: 3,
+                p: 2.5,
+                borderRadius: 4,
                 bgcolor: 'background.paper',
                 border: '1px solid',
                 borderColor: 'divider',
                 scrollSnapAlign: 'start',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 1,
-                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
-                transition: 'transform 0.2s, box-shadow 0.2s',
+                gap: 1.5,
+                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)',
+                transition: 'transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s',
                 '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
-                  borderColor: 'rgba(34, 197, 94, 0.3)',
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 20px 40px -10px rgba(16, 185, 129, 0.15)',
+                  borderColor: 'rgba(16, 185, 129, 0.3)',
                 },
               }}
             >
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 800, lineHeight: 1.2, letterSpacing: '-0.02em' }}>
                   {stock.symbol.replace('.IS', '')}
                 </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700 }}>
                   #{index + 1}
                 </Typography>
               </Box>
@@ -150,27 +153,29 @@ export default function TopGainersList() {
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
-                  fontSize: '0.75rem'
+                  fontSize: '0.75rem',
+                  fontWeight: 500
                 }}
               >
                 {stock.shortName}
               </Typography>
 
-              <Box sx={{ mt: 'auto', pt: 1 }}>
-                <Typography variant="body1" sx={{ fontWeight: 700 }}>
+              <Box sx={{ mt: 'auto', pt: 1.5 }}>
+                <Typography variant="body1" sx={{ fontWeight: 800, letterSpacing: '-0.02em' }}>
                   ₺{stock.currentPrice.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
                 </Typography>
                 <Typography
                   variant="body2"
                   sx={{
                     fontWeight: 700,
-                    color: '#22c55e',
+                    color: '#10b981',
                     display: 'flex',
                     alignItems: 'center',
                     gap: 0.5,
+                    mt: 0.5
                   }}
                 >
-                  <TrendingUp size={14} />
+                  <TrendingUp size={14} strokeWidth={3} />
                   +{stock.gainPercent.toFixed(2)}%
                 </Typography>
               </Box>

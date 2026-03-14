@@ -48,10 +48,17 @@ export default function StockGrid({
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <Search color="#9ca3af" size={20} />
+                <Search color="#64748b" size={20} />
               </InputAdornment>
             ),
-            sx: { bgcolor: 'background.paper', backdropFilter: 'blur(12px)' },
+            sx: { 
+              bgcolor: 'background.paper', 
+              backdropFilter: 'blur(12px)',
+              borderRadius: 3,
+              '& fieldset': { borderColor: 'divider' },
+              '&:hover fieldset': { borderColor: 'text.secondary' },
+              '&.Mui-focused fieldset': { borderColor: 'primary.main', borderWidth: 2 },
+            },
           }}
         />
       </Box>
@@ -60,21 +67,22 @@ export default function StockGrid({
         <Box
           sx={{
             textAlign: 'center',
-            mt: 8,
-            p: 4,
+            mt: 4,
+            p: 6,
             bgcolor: 'background.paper',
-            borderRadius: 4,
-            backdropFilter: 'blur(12px)',
+            borderRadius: 6,
+            backdropFilter: 'blur(20px)',
             border: '1px solid',
             borderColor: 'divider',
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
           }}
         >
-          <Search size={48} color="rgba(55, 65, 81, 1)" style={{ margin: '0 auto 16px' }} />
-          <Typography variant="h6" color="text.primary" gutterBottom>
-            Arama kriterlerinize uygun hisse bulunamadı.
+          <Search size={48} color="var(--mui-palette-text-disabled)" strokeWidth={1.5} style={{ margin: '0 auto 16px' }} />
+          <Typography variant="h6" color="text.primary" sx={{ fontWeight: 700, letterSpacing: '-0.02em' }} gutterBottom>
+            Sonuç Bulunamadı
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Lütfen farklı bir arama terimi girerek tekrar deneyin.
+            &quot;{searchQuery}&quot; aramasına uygun hisse senedi bulunamadı. Lütfen başka bir terim deneyin.
           </Typography>
         </Box>
       ) : (

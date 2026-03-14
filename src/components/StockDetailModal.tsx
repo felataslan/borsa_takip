@@ -53,34 +53,41 @@ export default function StockDetailModal({ open, onClose, stock }: StockDetailMo
   };
 
   return (
-    <Dialog 
+      <Dialog 
       open={open} 
       onClose={onClose}
       maxWidth="md"
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: 4,
+          borderRadius: 5,
           bgcolor: 'background.paper',
           backgroundImage: 'none',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          boxShadow: (theme) => theme.palette.mode === 'dark' 
+             ? '0 25px 50px -12px rgba(0, 0, 0, 0.7)' 
+             : '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
           overflow: 'hidden',
+          border: '1px solid',
+          borderColor: 'divider',
         }
       }}
     >
       <Box sx={{ 
-        p: { xs: 2, sm: 3 }, 
+        p: { xs: 2.5, sm: 3.5 }, 
         position: 'relative',
         borderBottom: '1px solid',
         borderColor: 'divider',
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
+        background: (theme) => theme.palette.mode === 'dark' 
+          ? 'linear-gradient(to bottom, rgba(255,255,255,0.02), transparent)' 
+          : 'linear-gradient(to bottom, rgba(0,0,0,0.01), transparent)'
       }}>
         {/* Header Info */}
         <Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-            <Typography variant="h5" fontWeight="bold" color="text.primary">
+            <Typography variant="h4" fontWeight={800} letterSpacing="-0.04em" color="text.primary">
               {stock.symbol.replace('.IS', '')}
             </Typography>
             <Chip 
@@ -145,27 +152,37 @@ export default function StockDetailModal({ open, onClose, stock }: StockDetailMo
 
            {/* Right Sidebar Stats Sections */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-             <Box sx={{ p: 2, borderRadius: 3, bgcolor: 'background.default', border: '1px solid', borderColor: 'divider' }}>
-                <Typography variant="caption" color="text.secondary" fontWeight={600} display="block" mb={1}>
+             <Box sx={{ 
+               p: 3, 
+               borderRadius: 4, 
+               bgcolor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.01)', 
+               border: '1px solid', 
+               borderColor: 'divider' 
+             }}>
+                <Typography variant="caption" color="text.secondary" fontWeight={700} display="block" mb={1} sx={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                   {displayLabel} Değişim
                 </Typography>
-                <Typography variant="h3" fontWeight="bold" color="text.primary" mb={1}>
-                   ₺{stock.regularMarketPrice?.toFixed(2) || '0.00'}
+                <Typography variant="h3" fontWeight={800} letterSpacing="-0.04em" color="text.primary" mb={1.5}>
+                   ₺{stock.regularMarketPrice?.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Chip 
-                    icon={isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />} 
+                    icon={isPositive ? <TrendingUp size={16} strokeWidth={3} /> : <TrendingDown size={16} strokeWidth={3} />} 
                     label={`${isPositive ? '+' : ''}${displayPct?.toFixed(2)}%`}
                     size="small"
                     sx={{ 
-                      fontWeight: 'bold',
+                      fontWeight: 700,
+                      height: 28,
+                      borderRadius: 1.5,
                       bgcolor: isPositive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
                       color: isPositive ? '#10b981' : '#f43f5e',
-                      '& .MuiChip-icon': { color: isPositive ? '#10b981' : '#f43f5e' }
+                      border: '1px solid',
+                      borderColor: isPositive ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)',
+                      '& .MuiChip-icon': { color: isPositive ? '#10b981' : '#f43f5e', ml: 1 }
                     }}
                   />
-                  <Typography variant="body2" color="text.secondary" fontWeight={500}>
-                    {isPositive ? '+' : ''}₺{displayVal?.toFixed(2)}
+                  <Typography variant="body2" color="text.secondary" fontWeight={600}>
+                    {isPositive ? '+' : ''}₺{displayVal?.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </Typography>
                 </Box>
              </Box>
