@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Stock } from '@/types/stock.types';
 import StockCard from '@/components/StockCard';
 import StockGrid from '@/components/StockGrid';
+import StockDetailModal from '@/components/StockDetailModal';
 import PageHeader from '@/components/PageHeader';
 import LoadingState from '@/components/LoadingState';
 import ErrorState from '@/components/ErrorState';
@@ -44,6 +45,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSector, setSelectedSector] = useState('All');
+  const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
   const { filteredStocks, sectors } = useStockFilter(stocks, searchQuery, selectedSector);
 
   const { favorites } = useFavoritesStore();
@@ -221,7 +223,7 @@ export default function Home() {
                         </Typography>
                         <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: GRID_COLS }}>
                           {sectorStocks.map((stock, idx) => (
-                            <StockCard key={stock.symbol} stock={stock} index={idx} />
+                            <StockCard key={stock.symbol} stock={stock} index={idx} onClick={(s) => setSelectedStock(s)} />
                           ))}
                         </Box>
                       </Box>
@@ -273,6 +275,11 @@ export default function Home() {
         </>
       )}
 
+      <StockDetailModal 
+        open={!!selectedStock} 
+        onClose={() => setSelectedStock(null)} 
+        stock={selectedStock} 
+      />
       <BackgroundOrbs orbs={BACKGROUND_ORBS} />
     </Container>
   );
