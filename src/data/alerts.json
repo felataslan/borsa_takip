@@ -1,0 +1,29 @@
+[
+  {
+    "id": "hifwtjbxh",
+    "contact": {
+      "email": "test@example.com"
+    },
+    "symbols": [
+      "BINHO.IS"
+    ],
+    "lastBreakStatus": {
+      "BINHO.IS": true
+    },
+    "createdAt": "2026-03-15T12:57:19.655Z"
+  },
+  {
+    "id": "x3n6up78u",
+    "contact": {
+      "email": "felataslan58@gmail.com",
+      "phone": "05374247286"
+    },
+    "symbols": [
+      "MCARD.IS",
+      "LXGYO.IS",
+      "SVGYO.IS"
+    ],
+    "lastBreakStatus": {},
+    "createdAt": "2026-03-15T12:59:16.904Z"
+  }
+]

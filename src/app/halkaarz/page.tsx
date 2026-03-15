@@ -10,39 +10,14 @@ import ErrorState from '@/components/ErrorState';
 import BackgroundOrbs from '@/components/BackgroundOrbs';
 import IpoReturnChart from '@/components/IpoReturnChart';
 import IpoStockCard from '@/components/IpoStockCard';
+import IpoAlertSettings from '@/components/IpoAlertSettings';
 import { useFetch } from '@/hooks/useFetch';
+import { toIPOStock } from '@/utils/ipo-utils';
 
 const BACKGROUND_ORBS = [
   { color: 'rgba(236, 72, 153, 0.05)', top: 120, left: 40 },
   { color: 'rgba(59, 130, 246, 0.05)', bottom: 0, right: 0, size: 384, blur: 150 },
 ];
-
-/**
- * Transforms raw API stock data (which may have partial IPO fields) into the
- * strongly-typed IPOStock shape used by this page.
- */
-function toIPOStock(stock: Record<string, unknown>): IPOStock {
-  const currentPrice =
-    (stock.regularMarketPrice as number) ||
-    (stock.price as number) ||
-    (stock.ipoPrice as number) ||
-    0;
-  const ipoPrice = (stock.ipoPrice as number) || 0;
-  const totalReturnPercent = ipoPrice > 0 ? ((currentPrice - ipoPrice) / ipoPrice) * 100 : 0;
-
-  return {
-    symbol: stock.symbol as string,
-    shortName: (stock.shortName as string) || (stock.ipoName as string) || (stock.symbol as string),
-    regularMarketPrice: currentPrice,
-    regularMarketChangePercent: (stock.regularMarketChangePercent as number) || 0,
-    regularMarketChange: 0,
-    currency: 'TRY',
-    ipoPrice,
-    ipoDate: (stock.ipoDate as string) || 'Bilinmiyor',
-    ipoName: (stock.ipoName as string) || (stock.shortName as string) || (stock.symbol as string),
-    totalReturnPercent,
-  };
-}
 
 export default function IposPage() {
   const { data: rawData, loading, error } = useFetch<Record<string, unknown>[]>(
@@ -80,6 +55,7 @@ export default function IposPage() {
       ) : (
         <>
           <IpoReturnChart stocks={ipoStocks} />
+          <IpoAlertSettings stocks={ipoStocks} />
 
           <Box
             sx={{
