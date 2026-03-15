@@ -103,12 +103,12 @@ export default function TopGainersList() {
         <Box
           sx={{
             display: 'flex',
-            gap: 2,
-            overflowX: 'auto',
-            pb: 2,
-            px: 0.5,
-            scrollSnapType: 'x mandatory',
-            '&::-webkit-scrollbar': { height: 6 },
+            flexDirection: 'column',
+            gap: 1.5,
+            overflowY: 'auto',
+            maxHeight: 600,
+            pr: 1,
+            '&::-webkit-scrollbar': { width: 4 },
             '&::-webkit-scrollbar-track': { background: 'transparent' },
             '&::-webkit-scrollbar-thumb': { background: 'var(--mui-palette-divider)', borderRadius: 4 },
           }}
@@ -117,67 +117,70 @@ export default function TopGainersList() {
             <Box
               key={stock.symbol}
               sx={{
-                flex: '0 0 auto',
-                width: { xs: 160, sm: 180 },
-                p: 2.5,
+                width: '100%',
+                p: 2,
                 borderRadius: 4,
                 bgcolor: 'background.paper',
                 border: '1px solid',
                 borderColor: 'divider',
-                scrollSnapAlign: 'start',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 1.5,
+                gap: 1,
                 boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)',
-                transition: 'transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s',
+                transition: 'all 0.3s cubic-bezier(0.23, 1, 0.32, 1)',
                 '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: '0 20px 40px -10px rgba(16, 185, 129, 0.15)',
+                  transform: 'translateX(4px)',
+                  boxShadow: '0 4px 20px -5px rgba(16, 185, 129, 0.15)',
                   borderColor: 'rgba(16, 185, 129, 0.3)',
                 },
               }}
             >
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 800, lineHeight: 1.2, letterSpacing: '-0.02em' }}>
-                  {stock.symbol.replace('.IS', '')}
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700 }}>
-                  #{index + 1}
-                </Typography>
-              </Box>
-              
-              <Typography
-                variant="body2"
-                sx={{
-                  color: 'text.secondary',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  fontSize: '0.75rem',
-                  fontWeight: 500
-                }}
-              >
-                {stock.shortName}
-              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+                      #{index + 1}
+                    </Typography>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 800, lineHeight: 1.2, letterSpacing: '-0.02em' }}>
+                      {stock.symbol.replace('.IS', '')}
+                    </Typography>
+                  </Box>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: 'text.secondary',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      fontSize: '0.7rem',
+                      fontWeight: 500,
+                      display: 'block',
+                      maxWidth: 150
+                    }}
+                  >
+                    {stock.shortName}
+                  </Typography>
+                </Box>
 
-              <Box sx={{ mt: 'auto', pt: 1.5 }}>
-                <Typography variant="body1" sx={{ fontWeight: 800, letterSpacing: '-0.02em' }}>
-                  ₺{stock.currentPrice.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontWeight: 700,
-                    color: '#10b981',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 0.5,
-                    mt: 0.5
-                  }}
-                >
-                  <TrendingUp size={14} strokeWidth={3} />
-                  +{stock.gainPercent.toFixed(2)}%
-                </Typography>
+                <Box sx={{ textAlign: 'right' }}>
+                  <Typography variant="body2" sx={{ fontWeight: 800, letterSpacing: '-0.02em' }}>
+                    ₺{stock.currentPrice.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 700,
+                      color: '#10b981',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'flex-end',
+                      gap: 0.25,
+                    }}
+                  >
+                    <TrendingUp size={12} strokeWidth={3} />
+                    +{stock.gainPercent.toFixed(2)}%
+                  </Typography>
+                </Box>
               </Box>
             </Box>
           ))}
