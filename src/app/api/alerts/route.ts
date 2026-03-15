@@ -10,21 +10,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Geçersiz veri. İletişim bilgisi ve en az bir hisse gereklidir.' }, { status: 400 });
     }
 
-    alertStorage.addOrUpdate({
+    await alertStorage.addOrUpdate({
       contact,
       symbols
     });
 
     return NextResponse.json({ success: true, message: 'Bildirim isteği başarıyla kaydedildi.' });
-  } catch (error) {
-    console.error('Error saving alert:', error);
-    return NextResponse.json({ error: 'Uyakı kaydedilirken bir hata oluştu.' }, { status: 500 });
+  } catch (err) {
+    console.error('Error saving alert:', err);
+    return NextResponse.json({ error: 'Uyarı kaydedilirken bir hata oluştu.' }, { status: 500 });
   }
 }
 
 export async function GET() {
   try {
-    const alerts = alertStorage.getAll();
+    const alerts = await alertStorage.getAll();
     return NextResponse.json(alerts);
   } catch (err) {
     console.error('Error fetching alerts:', err);

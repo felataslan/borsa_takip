@@ -20,7 +20,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Yetkisiz erişim' }, { status: 401 });
     }
 
-    const alerts = alertStorage.getAll();
+    const alerts = await alertStorage.getAll();
     if (alerts.length === 0) {
       return NextResponse.json({ message: 'Aktif uyarı bulunamadı.' });
     }
@@ -82,7 +82,7 @@ export async function GET(request: Request) {
     }
 
     // Güncellenmiş durumları kaydet
-    alertStorage.save(updatedAlerts);
+    await alertStorage.save(updatedAlerts);
 
     return NextResponse.json({ 
       success: true, 

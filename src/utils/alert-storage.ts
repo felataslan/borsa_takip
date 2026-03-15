@@ -1,68 +1,78 @@
-import fs from 'fs';
-import path from 'path';
+import dbConnect from '@/lib/mongodb';
+import Alert from '@/models/Alert';
 
 export interface UserAlert {
-  id: string;
+  id: string; // This will map to _id from MongoDB
   contact: {
     email?: string;
     phone?: string;
   };
   symbols: string[];
-  lastBreakStatus: Record<string, boolean>; // symbol -> true if ceiling was broken last time
+  lastBreakStatus: Record<string, boolean>;
   createdAt: string;
 }
 
-const STORAGE_PATH = path.join(process.cwd(), 'src/data/alerts.json');
-
-/**
- * Ensures the data directory and file exist
- */
-function ensureStorage() {
-  const dir = path.dirname(STORAGE_PATH);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-  if (!fs.existsSync(STORAGE_PATH)) {
-    fs.writeFileSync(STORAGE_PATH, JSON.stringify([], null, 2));
-  }
-}
-
 export const alertStorage = {
-  getAll: (): UserAlert[] => {
-    ensureStorage();
-    try {
-      const data = fs.readFileSync(STORAGE_PATH, 'utf-8');
-      return JSON.parse(data);
-    } catch {
-      return [];
-    }
+  getAll: async (): Promise<UserAlert[]> => {
+    await dbConnect();
+    const alerts = await Alert.find({}).lean();
+    return (alerts as unknown[]).map((a) => {
+      const alert = a as {
+        _id: { toString: () => string };
+        contact: { email?: string; phone?: string };
+        symbols: string[];
+        lastBreakStatus: Map<string, boolean>;
+        createdAt: Date;
+      };
+      return {
+        id: alert._id.toString(),
+        contact: alert.contact,
+        symbols: alert.symbols,
+        lastBreakStatus: Object.fromEntries(alert.lastBreakStatus || new Map()),
+        createdAt: alert.createdAt.toISOString()
+      };
+    });
   },
 
-  save: (alerts: UserAlert[]) => {
-    ensureStorage();
-    fs.writeFileSync(STORAGE_PATH, JSON.stringify(alerts, null, 2));
-  },
-
-  addOrUpdate: (newAlert: Omit<UserAlert, 'id' | 'createdAt' | 'lastBreakStatus'>) => {
-    const alerts = alertStorage.getAll();
-    const existingIndex = alerts.findIndex(a => 
-      (newAlert.contact.email && a.contact.email === newAlert.contact.email) ||
-      (newAlert.contact.phone && a.contact.phone === newAlert.contact.phone)
-    );
-
-    if (existingIndex > -1) {
-      // Update symbols
-      alerts[existingIndex].symbols = Array.from(new Set([...alerts[existingIndex].symbols, ...newAlert.symbols]));
-    } else {
-      // Add new
-      alerts.push({
-        id: Math.random().toString(36).substr(2, 9),
-        contact: newAlert.contact,
-        symbols: newAlert.symbols,
-        lastBreakStatus: {},
-        createdAt: new Date().toISOString()
+  /**
+   * MongoDB ile save işlemi genellikle addOrUpdate içinde veya otomatik yapılır.
+   * Bu metod toplu güncelleme için bırakıldı.
+   */
+  save: async (alerts: UserAlert[]) => {
+    await dbConnect();
+    for (const alert of alerts) {
+      await Alert.findByIdAndUpdate(alert.id, {
+        contact: alert.contact,
+        symbols: alert.symbols,
+        lastBreakStatus: alert.lastBreakStatus
       });
     }
-    alertStorage.save(alerts);
+  },
+
+  addOrUpdate: async (newAlert: Omit<UserAlert, 'id' | 'createdAt' | 'lastBreakStatus'>) => {
+    await dbConnect();
+    
+    // Find existing by email or phone
+    const query = [];
+    if (newAlert.contact.email) query.push({ 'contact.email': newAlert.contact.email });
+    if (newAlert.contact.phone) query.push({ 'contact.phone': newAlert.contact.phone });
+
+    if (query.length === 0) return;
+
+    const existing = await Alert.findOne({ $or: query });
+
+    if (existing) {
+      // Update symbols (add unique ones)
+      const combinedSymbols = Array.from(new Set([...existing.symbols, ...newAlert.symbols]));
+      existing.symbols = combinedSymbols;
+      await existing.save();
+    } else {
+      // Create new
+      await Alert.create({
+        contact: newAlert.contact,
+        symbols: newAlert.symbols,
+        lastBreakStatus: {}
+      });
+    }
   }
 };
