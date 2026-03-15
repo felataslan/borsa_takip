@@ -22,12 +22,20 @@
   - Renk Paleti: Canlı zümrüt yeşili (`#10b981`) ve daha derin bir karanlık mod (`#09090b`) renk uzayı eklendi.
   - `Header` navigasyonu "pill" (hap) tasarımına ve logoya parlama (glow) efekti uygulandı. 
   - `StockCard` bileşenlerinde `framer-motion` ile interaktif 3D hover (kalkış) animasyonu ve hissiyatı güçlendiren arkaplan "glow orb" entegre edildi.
+- **Layout Yeniden Yapılandırma (2026-03-15):** Ana sayfa ve sektörler tabı kullanıcı deneyimini artırmak için yeniden düzenlendi.
+  - **Sidebar Tasarımı:** "Hisseler" tabı iki sütunlu bir yapıya geçirildi. Sol tarafta arama ve hisse gridi, sağ tarafta ise yükselenler listeleri yer almaktadır.
+  - **Dikey Liste:** "En Çok Yükselenler" verileri yatay kaydırma yerine dikey bir liste olarak sunulmaya başlandı.
+  - **Sticky Sidebar:** Sağ menü masaüstü görünümünde "sticky" (scroll ile sabit) hale getirildi.
+
+- **Halka Arz Grafiği Geliştirmeleri:** `/halkaarz` sayfasındaki performans grafiğine yeni özellikler eklendi.
+  - **Metrik Seçici:** Grafikte "Toplam Getiri" ve "Günlük Değişim" arasında geçiş yapmayı sağlayan Tabs yapısı eklendi.
+  - **Gelişmiş Tooltip:** `IpoTooltip` her iki metriği de (toplam ve günlük) aynı anda gösterecek şekilde güncellendi.
+
 - **Hydration & UI Düzeltmeleri:** MUI v6 Grid `size` prop'u kullanımına geçildi. Ayrıca Next.js SSR ile Zustand localStorage arasındaki hydration hatalarını önlemek için `useMounted` hook'u yazılarak entegre edildi.
 - **Dark/Light Mode:** `ThemeProvider` localStorage üzerinden temayı hatırlar ve sistem tercihine göre varsayılan belirler. "Cascading renders" uyarısını düzeltecek şekilde `useEffect` akışı iyileştirildi.
 
 ## Gelecek Planı veya Olası Eklemeler
 
-- Arama kutusuna debounce eklenebilir (performans optimizasyonu).
 - Hisse detay sayfası: tıklanan hisse için geçmiş fiyat grafiği veya bilanço bilgisi.
 - `SWR` veya `React Query` kullanılarak veri önbelleğe alınabilir (şu an vanilla `fetch` + `setInterval` kullanılıyor).
 - Vercel'e deploy ve `15 dk gecikmeli` bildiriminin UI'a işlenmesi.

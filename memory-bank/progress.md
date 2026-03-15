@@ -24,6 +24,8 @@
 - [x] Performans & API Rate Limit Koruması: `node-cache` entegrasyonu ile API endpoint'lerinde sunucu taraflı önbellekleme uygulandı
 - [x] UI Modernizasyonu: Uygulama tasarımı Premium uçtan uca "Glassmorphism" efekti, zümrüt yeşili palet ve gelişmiş `framer-motion` animasyonları ile modernleştirildi
 - [x] `npm run build` ve `npm run lint` sıfır hata ile geçmekte
+- [x] Ana sayfa layout reorganization (sidebar + dikey yükselen listeleri)
+- [x] Halka arz grafiğine günlük değişim seçeneği ve gelişmiş tooltip eklendi
 ## Bekleyen/İlerleyen Aşamalar (Backlog):
 
 - [ ] Hisse detay sayfası (tıklama ile geçmiş fiyat grafiği veya bilanço bilgisi)

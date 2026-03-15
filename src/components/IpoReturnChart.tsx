@@ -1,10 +1,9 @@
 'use client';
 
-import React from 'react';
-import { Box, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Tabs, Tab } from '@mui/material';
 import { Cell } from 'recharts';
 import { IPOStock } from '@/types/stock.types';
-import { useAppTheme } from '@/theme/ThemeProvider';
 import IpoTooltip from '@/components/IpoTooltip';
 import dynamic from 'next/dynamic';
 
@@ -20,8 +19,14 @@ interface IpoReturnChartProps {
   stocks: IPOStock[];
 }
 
+type MetricType = 'totalReturnPercent' | 'regularMarketChangePercent';
+
 export default function IpoReturnChart({ stocks }: IpoReturnChartProps) {
-  const { mode } = useAppTheme();
+  const [activeMetric, setActiveMetric] = useState<MetricType>('totalReturnPercent');
+
+  const handleMetricChange = (_: React.SyntheticEvent, newValue: MetricType) => {
+    setActiveMetric(newValue);
+  };
 
   return (
     <Box
@@ -36,22 +41,38 @@ export default function IpoReturnChart({ stocks }: IpoReturnChartProps) {
         borderColor: 'divider',
       }}
     >
-      <Typography variant="h6" sx={{ color: 'text.primary', mb: 4, fontWeight: 'bold' }}>
-        Halka Arz Sonrası Toplam Getiri (%)
-      </Typography>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { sm: 'center' }, mb: 4, gap: 2 }}>
+        <Typography variant="h6" sx={{ color: 'text.primary', fontWeight: 'bold' }}>
+          {activeMetric === 'totalReturnPercent' ? 'Halka Arz Sonrası Toplam Getiri (%)' : 'Günlük Değişim (%)'}
+        </Typography>
+        
+        <Tabs
+          value={activeMetric}
+          onChange={handleMetricChange}
+          sx={{
+            minHeight: 36,
+            '& .MuiTabs-indicator': { height: '100%', borderRadius: 1.5, zIndex: 0, opacity: 0.1, bgcolor: activeMetric === 'totalReturnPercent' ? 'primary.main' : 'success.main' },
+            '& .MuiTab-root': {
+              minHeight: 36,
+              textTransform: 'none',
+              fontWeight: 700,
+              fontSize: '0.875rem',
+              zIndex: 1,
+              px: 3,
+              borderRadius: 1.5,
+              transition: 'all 0.2s',
+              '&.Mui-selected': { color: activeMetric === 'totalReturnPercent' ? 'primary.main' : 'success.main' }
+            }
+          }}
+        >
+          <Tab value="totalReturnPercent" label="Toplam Getiri" />
+          <Tab value="regularMarketChangePercent" label="Günlük Değişim" />
+        </Tabs>
+      </Box>
+
       <Box sx={{ height: 400, width: '100%' }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={stocks} margin={{ top: 20, right: 30, left: 0, bottom: 50 }}>
-            <defs>
-              <linearGradient id="colorPos" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#10b981" stopOpacity={1} />
-                <stop offset="95%" stopColor="#059669" stopOpacity={0.8} />
-              </linearGradient>
-              <linearGradient id="colorNeg" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#f43f5e" stopOpacity={1} />
-                <stop offset="95%" stopColor="#e11d48" stopOpacity={0.8} />
-              </linearGradient>
-            </defs>
             <CartesianGrid
               strokeDasharray="3 3"
               stroke="rgba(156, 163, 175, 0.2)"
@@ -72,19 +93,17 @@ export default function IpoReturnChart({ stocks }: IpoReturnChartProps) {
               tickFormatter={(val: number) => `${val}%`}
             />
             <Tooltip content={<IpoTooltip />} cursor={{ fill: 'rgba(156, 163, 175, 0.1)' }} />
-            <Bar dataKey="totalReturnPercent" radius={[6, 6, 0, 0]} animationDuration={1500}>
-              {stocks.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={
-                    mode === 'dark'
-                      ? '#ffffff'
-                      : entry.totalReturnPercent >= 0
-                      ? '#10b981'
-                      : '#f43f5e'
-                  }
-                />
-              ))}
+            <Bar dataKey={activeMetric} radius={[6, 6, 0, 0]} animationDuration={1000}>
+              {stocks.map((entry, index) => {
+                const value = entry[activeMetric];
+                const color = value >= 0 ? '#10b981' : '#f43f5e';
+                return (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={color}
+                  />
+                );
+              })}
             </Bar>
           </BarChart>
         </ResponsiveContainer>

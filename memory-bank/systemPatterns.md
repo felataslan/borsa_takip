@@ -58,7 +58,14 @@ Sayfa yüklenir
 - **Portföy / Yatırım:** `usePortfolioStore` (Zustand + `persist` → `localStorage`) ile lot/maliyet takibi
 - **Sunucu Cache (Rate Limit Koruması):** `node-cache` kullanılarak `/api/stocks` (120 sn) ve `/api/stocks/[symbol]/history` (300 sn) rote'larında server-side caching.
 - **Scraper Cache:** `getDynamicIPOs()` içinde 12 saatlik bellek cache (module-level değişken)
-- **Lokal:** `useState` (searchQuery, selectedSector, loading, data vb.)
+- **Lokal:** `useState` (searchQuery, selectedSector, activeMetric, loading, data vb.)
+
+---
+
+## UI Desenleri
+
+- **Two-Column Layout (Sidebar):** `SectorsTab` bileşeninde ana içerik solda, yardımcı araçlar ve performans listeleri (yükselenler) sağda `sticky` bir sidebar içinde sunulur.
+- **Metric Toggle:** Grafikler ve listeler için `Tabs` bileşeni kullanılarak farklı veri setleri (ör. Toplam Getiri vs Günlük Değişim) arasında geçiş sağlanır.
 
 ---
 
