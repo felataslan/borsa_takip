@@ -38,6 +38,7 @@ export function useFetch<T>(
     fallbackData: initialData,
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
+    keepPreviousData: true, // Show stale data while revalidating (smoother modal re-opens)
     dedupingInterval: 5000, // Deduplicate requests within 5 seconds
     ...(refreshIntervalMs && refreshIntervalMs > 0 ? { refreshInterval: refreshIntervalMs } : {}),
   };

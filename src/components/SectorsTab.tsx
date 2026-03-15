@@ -17,6 +17,7 @@ import {
   InputLabel,
 } from '@mui/material';
 import { useStockFilter } from '@/hooks/useStockFilter';
+import { useDebounce } from '@/hooks/useDebounce';
 
 const GRID_COLS = {
   xs: '1fr',
@@ -34,7 +35,8 @@ interface SectorsTabProps {
 export default function SectorsTab({ stocks, onStockClick }: SectorsTabProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSector, setSelectedSector] = useState('All');
-  const { filteredStocks, sectors } = useStockFilter(stocks, searchQuery, selectedSector);
+  const debouncedSearch = useDebounce(searchQuery, 300);
+  const { filteredStocks, sectors } = useStockFilter(stocks, debouncedSearch, selectedSector);
 
   // Group filtered stocks by sector
   const groupedStocks = filteredStocks.reduce(

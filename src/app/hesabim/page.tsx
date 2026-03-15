@@ -21,6 +21,7 @@ import LoadingState from '@/components/LoadingState';
 import ErrorState from '@/components/ErrorState';
 import BackgroundOrbs from '@/components/BackgroundOrbs';
 import { useMounted } from '@/hooks/useMounted';
+import { COLOR_POSITIVE, COLOR_NEGATIVE, COLOR_POSITIVE_BG, COLOR_NEGATIVE_BG } from '@/constants/colors';
 
 const BACKGROUND_ORBS = [
   { color: 'rgba(59, 130, 246, 0.15)', top: '10%', left: '20%' },
@@ -114,7 +115,7 @@ export default function PortfolioPage() {
                       variant="h4" 
                       sx={{ 
                         fontWeight: 'bold', 
-                        color: totalProfitLoss >= 0 ? '#10b981' : '#f43f5e' 
+                        color: totalProfitLoss >= 0 ? COLOR_POSITIVE : COLOR_NEGATIVE 
                       }}
                     >
                       {totalProfitLoss > 0 ? '+' : ''}{totalProfitLoss.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} ₺
@@ -124,10 +125,10 @@ export default function PortfolioPage() {
                       icon={totalProfitLoss >= 0 ? <TrendingUp size={16}/> : <TrendingDown size={16}/>}
                       label={`${totalProfitLoss > 0 ? '+' : ''}${totalProfitLossPercentage.toFixed(2)}%`}
                       sx={{
-                         bgcolor: totalProfitLoss >= 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
-                         color: totalProfitLoss >= 0 ? '#10b981' : '#f43f5e',
+                         bgcolor: totalProfitLoss >= 0 ? COLOR_POSITIVE_BG : COLOR_NEGATIVE_BG,
+                         color: totalProfitLoss >= 0 ? COLOR_POSITIVE : COLOR_NEGATIVE,
                          fontWeight: 'bold',
-                         '& .MuiChip-icon': { color: totalProfitLoss >= 0 ? '#10b981' : '#f43f5e' },
+                         '& .MuiChip-icon': { color: totalProfitLoss >= 0 ? COLOR_POSITIVE : COLOR_NEGATIVE },
                       }}
                     />
                   </Box>

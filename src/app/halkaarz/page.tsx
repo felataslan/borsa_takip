@@ -1,38 +1,16 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Cell } from 'recharts';
 import { IPOStock } from '@/types/stock.types';
-import { Rocket, TrendingUp, TrendingDown, Clock } from 'lucide-react';
-import {
-  Box,
-  Container,
-  Typography,
-  Card,
-  CardContent,
-  Chip,
-  TextField,
-  InputAdornment,
-} from '@mui/material';
-import { motion } from 'framer-motion';
+import { Rocket } from 'lucide-react';
+import { Box, Container } from '@mui/material';
 import PageHeader from '@/components/PageHeader';
-import { useAppTheme } from '@/theme/ThemeProvider';
 import LoadingState from '@/components/LoadingState';
 import ErrorState from '@/components/ErrorState';
 import BackgroundOrbs from '@/components/BackgroundOrbs';
-import IpoTooltip from '@/components/IpoTooltip';
+import IpoReturnChart from '@/components/IpoReturnChart';
+import IpoStockCard from '@/components/IpoStockCard';
 import { useFetch } from '@/hooks/useFetch';
-
-// Dynamically import recharts to avoid SSR issues
-import dynamic from 'next/dynamic';
-
-const BarChart = dynamic(() => import('recharts').then((mod) => mod.BarChart), { ssr: false });
-const Bar = dynamic(() => import('recharts').then((mod) => mod.Bar), { ssr: false });
-const XAxis = dynamic(() => import('recharts').then((mod) => mod.XAxis), { ssr: false });
-const YAxis = dynamic(() => import('recharts').then((mod) => mod.YAxis), { ssr: false });
-const CartesianGrid = dynamic(() => import('recharts').then((mod) => mod.CartesianGrid), { ssr: false });
-const Tooltip = dynamic(() => import('recharts').then((mod) => mod.Tooltip), { ssr: false });
-const ResponsiveContainer = dynamic(() => import('recharts').then((mod) => mod.ResponsiveContainer), { ssr: false });
 
 const BACKGROUND_ORBS = [
   { color: 'rgba(236, 72, 153, 0.05)', top: 120, left: 40 },
@@ -67,7 +45,6 @@ function toIPOStock(stock: Record<string, unknown>): IPOStock {
 }
 
 export default function IposPage() {
-  const { mode } = useAppTheme();
   const { data: rawData, loading, error } = useFetch<Record<string, unknown>[]>(
     '/api/stocks?index=HALKAARZ',
     { initialData: [] }
@@ -102,75 +79,8 @@ export default function IposPage() {
         <ErrorState message={error} />
       ) : (
         <>
-          {/* Bar Chart */}
-          <Box
-            sx={{
-              mb: 6,
-              position: 'relative',
-              zIndex: 10,
-              bgcolor: 'background.paper',
-              p: { xs: 2, md: 4 },
-              borderRadius: 4,
-              border: '1px solid',
-              borderColor: 'divider',
-            }}
-          >
-            <Typography variant="h6" sx={{ color: 'text.primary', mb: 4, fontWeight: 'bold' }}>
-              Halka Arz Sonrası Toplam Getiri (%)
-            </Typography>
-            <Box sx={{ height: 400, width: '100%' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={ipoStocks} margin={{ top: 20, right: 30, left: 0, bottom: 50 }}>
-                  <defs>
-                    <linearGradient id="colorPos" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={1} />
-                      <stop offset="95%" stopColor="#059669" stopOpacity={0.8} />
-                    </linearGradient>
-                    <linearGradient id="colorNeg" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f43f5e" stopOpacity={1} />
-                      <stop offset="95%" stopColor="#e11d48" stopOpacity={0.8} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="rgba(156, 163, 175, 0.2)"
-                    vertical={false}
-                  />
-                  <XAxis
-                    dataKey="symbol"
-                    stroke="#9ca3af"
-                    tick={{ fill: '#9ca3af', fontSize: 13, fontWeight: 500 }}
-                    tickFormatter={(val: string) => val.replace('.IS', '')}
-                    angle={-45}
-                    textAnchor="end"
-                    tickMargin={10}
-                  />
-                  <YAxis
-                    stroke="#9ca3af"
-                    tick={{ fill: '#9ca3af', fontWeight: 500 }}
-                    tickFormatter={(val: number) => `${val}%`}
-                  />
-                  <Tooltip content={<IpoTooltip />} cursor={{ fill: 'rgba(156, 163, 175, 0.1)' }} />
-                  <Bar dataKey="totalReturnPercent" radius={[6, 6, 0, 0]} animationDuration={1500}>
-                    {ipoStocks.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={
-                          mode === 'dark'
-                            ? '#ffffff'
-                            : entry.totalReturnPercent >= 0
-                            ? '#10b981'
-                            : '#f43f5e'
-                        }
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </Box>
-          </Box>
+          <IpoReturnChart stocks={ipoStocks} />
 
-          {/* IPO Detail Cards */}
           <Box
             sx={{
               display: 'grid',
@@ -180,151 +90,15 @@ export default function IposPage() {
               zIndex: 10,
             }}
           >
-            {ipoStocks.map((stock, idx) => {
-              const isPos = stock.totalReturnPercent >= 0;
-              return (
-                <Card
-                  key={stock.symbol}
-                  component={motion.div}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: idx * 0.05 }}
-                  sx={{
-                    bgcolor: 'background.paper',
-                    backdropFilter: 'blur(12px)',
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    position: 'relative',
-                    overflow: 'hidden',
-                  }}
-                >
-                  <CardContent sx={{ p: 3 }}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'flex-start',
-                        mb: 3,
-                      }}
-                    >
-                      <Box>
-                        <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-                          {stock.symbol.replace('.IS', '')}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {stock.ipoName}
-                        </Typography>
-                      </Box>
-                      <Chip
-                        icon={<Clock size={14} />}
-                        label={stock.ipoDate}
-                        size="small"
-                        sx={{
-                          bgcolor: 'rgba(156, 163, 175, 0.1)',
-                          color: 'text.secondary',
-                          '& .MuiChip-icon': { color: 'text.secondary' },
-                        }}
-                      />
-                    </Box>
-
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                      <Box>
-                        <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-                          Halka Arz Fiyatı
-                        </Typography>
-                        <Typography variant="body1" sx={{ color: 'text.primary', fontWeight: 500 }}>
-                          {stock.ipoPrice.toFixed(2)} ₺
-                        </Typography>
-                      </Box>
-                      <Box sx={{ textAlign: 'right' }}>
-                        <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-                          Anlık Fiyat
-                        </Typography>
-                        <Typography variant="body1" sx={{ color: 'text.primary', fontWeight: 'bold' }}>
-                          {stock.regularMarketPrice.toFixed(2)} ₺
-                        </Typography>
-                      </Box>
-                    </Box>
-
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        mb: 2,
-                        pt: 2,
-                        borderTop: '1px solid',
-                        borderColor: 'divider',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <TextField
-                        size="small"
-                        type="number"
-                        placeholder="0"
-                        label="Elimdeki Lot"
-                        value={userLots[stock.symbol] || ''}
-                        onChange={(e) => handleLotChange(stock.symbol, e.target.value)}
-                        variant="outlined"
-                        slotProps={{
-                          input: {
-                            endAdornment: <InputAdornment position="end">Lot</InputAdornment>,
-                            inputMode: 'numeric',
-                          }
-                        }}
-                        sx={{ width: '45%' }}
-                      />
-                      <Box sx={{ textAlign: 'right', width: '50%' }}>
-                        <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-                          ₺ Kâr/Zarar
-                        </Typography>
-                        {userLots[stock.symbol] > 0 ? (
-                          <Typography
-                            variant="body1"
-                            sx={{ color: isPos ? '#4ade80' : '#f87171', fontWeight: 'bold' }}
-                          >
-                            {isPos ? '+' : ''}
-                            {(
-                              (stock.regularMarketPrice - stock.ipoPrice) * userLots[stock.symbol]
-                            ).toLocaleString('tr-TR', { maximumFractionDigits: 2 })} ₺
-                          </Typography>
-                        ) : (
-                          <Typography variant="body1" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                            -
-                          </Typography>
-                        )}
-                      </Box>
-                    </Box>
-
-                    <Box
-                      sx={{
-                        mt: 1,
-                        pt: 2,
-                        borderTop: '1px solid',
-                        borderColor: 'divider',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        Yüzdesel Getiri:
-                      </Typography>
-                      <Chip
-                        icon={isPos ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-                        label={`${isPos ? '+' : ''}${stock.totalReturnPercent.toFixed(2)}%`}
-                        size="small"
-                        sx={{
-                          fontWeight: 600,
-                          bgcolor: isPos ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                          color: isPos ? '#4ade80' : '#f87171',
-                          '& .MuiChip-icon': { color: isPos ? '#4ade80' : '#f87171' },
-                        }}
-                      />
-                    </Box>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {ipoStocks.map((stock, idx) => (
+              <IpoStockCard
+                key={stock.symbol}
+                stock={stock}
+                index={idx}
+                userLots={userLots[stock.symbol] || 0}
+                onLotChange={handleLotChange}
+              />
+            ))}
           </Box>
         </>
       )}

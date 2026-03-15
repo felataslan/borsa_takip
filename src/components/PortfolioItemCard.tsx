@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { Trash2 } from 'lucide-react';
 import { Stock } from '@/types/stock.types';
+import { COLOR_POSITIVE, COLOR_NEGATIVE, COLOR_NEGATIVE_BG } from '@/constants/colors';
 
 export interface PortfolioItemData {
   symbol: string;
@@ -48,7 +49,7 @@ export default function PortfolioItemCard({ item, onRemove }: PortfolioItemCardP
           <IconButton 
             size="small" 
             onClick={() => onRemove(item.symbol)}
-            sx={{ color: 'text.secondary', '&:hover': { color: '#f43f5e', bgcolor: 'rgba(244, 63, 94, 0.1)' } }}
+            sx={{ color: 'text.secondary', '&:hover': { color: COLOR_NEGATIVE, bgcolor: COLOR_NEGATIVE_BG } }}
           >
             <Trash2 size={18} />
           </IconButton>
@@ -80,7 +81,7 @@ export default function PortfolioItemCard({ item, onRemove }: PortfolioItemCardP
               <Typography variant="caption" color="text.secondary" display="block">Kâr/Zarar</Typography>
               <Typography variant="body1" sx={{ 
                 fontWeight: 'bold', 
-                color: item.profitLoss >= 0 ? '#10b981' : '#f43f5e' 
+                color: item.profitLoss >= 0 ? COLOR_POSITIVE : COLOR_NEGATIVE 
               }}>
                 {item.profitLoss > 0 ? '+' : ''}{item.profitLoss.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} ₺
               </Typography>

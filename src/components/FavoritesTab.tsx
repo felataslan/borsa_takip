@@ -6,11 +6,13 @@ import { Star } from 'lucide-react';
 import StockGrid from '@/components/StockGrid';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { useStockFilter } from '@/hooks/useStockFilter';
+import { useDebounce } from '@/hooks/useDebounce';
 
 export default function FavoritesTab() {
   const { favorites } = useFavoritesStore();
   const [favSearchQuery, setFavSearchQuery] = useState('');
-  const { filteredStocks: filteredFavorites } = useStockFilter(favorites, favSearchQuery);
+  const debouncedSearch = useDebounce(favSearchQuery, 300);
+  const { filteredStocks: filteredFavorites } = useStockFilter(favorites, debouncedSearch);
 
   if (favorites.length === 0) {
     return (

@@ -2,14 +2,25 @@ import { NextResponse } from 'next/server';
 import YahooFinance from 'yahoo-finance2';
 import { BIST_100 } from '@/data/bist-indexes';
 import { TopGainerStock } from '@/types/stock.types';
+import NodeCache from 'node-cache';
 
 // Her 12 saatte bir yenile (ISR Cache)
 export const revalidate = 43200;
+
+// Server-side cache: 6 saat TTL — Yahoo Finance'e gereksiz istek atmayı önler
+const cache = new NodeCache({ stdTTL: 21600, checkperiod: 3600 });
+const CACHE_KEY = 'top_gainers';
 
 const yahooFinance = new YahooFinance({ suppressNotices: ['yahooSurvey', 'ripHistorical'] });
 
 export async function GET() {
   try {
+    // 1. Önce cache'e bak
+    const cachedData = cache.get(CACHE_KEY);
+    if (cachedData) {
+      return NextResponse.json(cachedData);
+    }
+
     const symbols = BIST_100;
     const now = new Date();
     const fiveYearsAgo = new Date();
@@ -35,7 +46,7 @@ export async function GET() {
     }> = [];
 
     // Chunk'lar halinde işlem yap (API limitlerine takılmamak için)
-    const chunkSize = 20;
+    const chunkSize = 50; // 50'lik chunk'lar → 2 sıralı tur (eski: 20 → 5 tur)
     for (let i = 0; i < symbols.length; i += chunkSize) {
       const chunk = symbols.slice(i, i + chunkSize);
       
@@ -108,6 +119,9 @@ export async function GET() {
     results['6m'] = calculateTopGainers('6m', 'p6m');
     results['1y'] = calculateTopGainers('1y', 'p1y');
     results['5y'] = calculateTopGainers('5y', 'p5y');
+
+    // 2. Sonuçları cache'e kaydet
+    cache.set(CACHE_KEY, results);
 
     return NextResponse.json(results);
   } catch (error) {
